@@ -57,6 +57,7 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
   );
   GoogleMapController _googleMapController;
 
+  double currZoomLevel = 15;
   List<LatLngAndGeohash> list = List();
 
   ClusteringHelper clusteringHelper;
@@ -177,15 +178,16 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
                           ? rvParkIcon
                           : marker.icon,
           onTap: () async {
-            setState(() {
-              _spotDetailProgress = true;
-              _markerDetailVisibility = true;
-              _selectedSpotModel = spotMap[markerID.value.split("@")[1]];
-            });
             if (markerID.value.contains('_wild') ||
                 markerID.value.contains('_park') ||
                 markerID.value.contains('_camp') ||
                 markerID.value.contains('_rv')) {
+              setState(() {
+                _spotDetailProgress = true;
+                _markerDetailVisibility = true;
+                _selectedSpotModel = spotMap[markerID.value.split("@")[1]];
+              });
+
               var rate = await ReviewController()
                   .getReviewBySpotId(_selectedSpotModel.spotId);
               double distanceInMeters = await Geolocator().distanceBetween(
@@ -198,6 +200,15 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
                     double.parse((distanceInMeters / 1000).toStringAsFixed(2));
                 _spotRating = rate;
                 _spotDetailProgress = false;
+              });
+            } else {
+              setState(() {
+                currZoomLevel += 3;
+                _googleMapController.animateCamera(
+                    CameraUpdate.newCameraPosition(CameraPosition(
+                        target: LatLng(marker.position.latitude,
+                            marker.position.longitude),
+                        zoom: currZoomLevel)));
               });
             }
           },
@@ -367,6 +378,7 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
                 onCameraMove: (newPosition) {
                   setState(() {
                     positionIconColor = Colors.black;
+                    currZoomLevel = newPosition.zoom;
                   });
                   clusteringHelper.onCameraMove(newPosition,
                       forceUpdate: false);
