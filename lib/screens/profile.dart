@@ -405,6 +405,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                       Column(
                                         children: <Widget>[
                                           Text("VAN NAME"),
+                                          SizedBox(height: 20,),
                                           Text(
                                             // "ANZAVAN",
                                             _profileModel.vanName == null
@@ -418,6 +419,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                       Column(
                                         children: <Widget>[
                                           Text("VEHIVLE TYPE"),
+                                          SizedBox(height: 20,),
                                           Text(
                                             // "VW T3",
                                             _profileModel.vehicleType == null
@@ -431,6 +433,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                       Column(
                                         children: <Widget>[
                                           Text("TRAVELLER STATUS"),
+                                          SizedBox(height: 20,),
                                           Text(
                                             // "Full Time",
                                             _profileModel.travStatus == null

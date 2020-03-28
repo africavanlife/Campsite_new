@@ -12,6 +12,7 @@ import 'package:campsite/util/icon_buttons.dart';
 import 'package:campsite/util/resources.dart';
 import 'package:campsite/util/spot_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
@@ -215,17 +216,32 @@ class _CommunityScreenState extends State<CommunityScreen> {
             }
             caravanToursList.add(lst);
           }
-        
         }
       }
     }
 
-    for (List lst in caravanToursList) {
+   for (List<LatLng> lst in caravanToursList) {
+      List<LatLng> poliList = List();
+      PolylinePoints polylinePoints = PolylinePoints();
+      for (var p = 1; p < lst.length; p++) {
+        List<PointLatLng> result =
+            await polylinePoints.getRouteBetweenCoordinates(
+                Resources.googleAPIKey,
+                lst[p - 1].latitude,
+                lst[p - 1].longitude,
+                lst[p].latitude,
+                lst[p].longitude);
+
+        result.forEach((element) {
+          poliList.add(LatLng(element.latitude, element.longitude));
+        });
+      }
+
       Polyline polyline = Polyline(
         color: Color.fromRGBO(255, 0, 0, 0.5),
         polylineId: PolylineId(lst.hashCode.toString()),
-        width: 8,
-        points: lst,
+        width: 5,
+        points: poliList,
         visible: true,
       );
       polylines.add(polyline);
@@ -411,7 +427,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                             children: <Widget>[
                                               Text(
                                                 // "Starting : ${_selectedEvent.spotID == null ? "" : _selectedEvent.spotID.length < 1 ? "" : getAddress(_selectedEvent.spotID[0]).then((value) => value)}",
-                                                "Starting : ${_selectedEvent.spotID.length<1 ? "" :_selectedEvent.spotID[0]}",
+                                                "Starting : ${_selectedEvent.spotID.length < 1 ? "" : _selectedEvent.spotID[0]}",
                                                 style: TextStyle(
                                                     color: Resources
                                                         .mainBlackColor),
@@ -424,7 +440,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                               ),
                                               Text(
                                                 // "Ending : ${_selectedEvent.spotID == null ? "" : _selectedEvent.spotID.length < 1 ? "" : getAddress(_selectedEvent.spotID[_selectedEvent.spotID.length - 1])}",
-                                                "Ending : ${_selectedEvent.spotID.length<1 ? "" :_selectedEvent.spotID[_selectedEvent.spotID.length-1]}",
+                                                "Ending : ${_selectedEvent.spotID.length < 1 ? "" : _selectedEvent.spotID[_selectedEvent.spotID.length - 1]}",
                                                 style: TextStyle(
                                                     color: Resources
                                                         .mainBlackColor),

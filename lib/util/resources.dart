@@ -7,6 +7,7 @@ class Resources {
   static final Color mainColor = Colors.red;
   static final GlobalKey<NavigatorState> navigationKey =
       GlobalKey<NavigatorState>();
+static final String googleAPIKey="AIzaSyD2POtiebHnl3MuwvxpYn1ALabp4Z05o64";
 
   static final String userId = "17msbglv144k6whhkhc";
   // static final List images = [

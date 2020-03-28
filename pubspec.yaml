@@ -43,7 +43,7 @@ dependencies:
   geocoder: ^0.2.1
   shared_preferences: ^0.5.6+3
   simple_auth_flutter: ^2.0.4
-  
+  flutter_polyline_points: ^0.1.0
 
 
   

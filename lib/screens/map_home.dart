@@ -487,12 +487,23 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
                                 children: <Widget>[
                                   Row(
                                     children: <Widget>[
-                                      Image(
-                                        width: (sysWidth - 20) * 0.85,
-                                        height: sysHeight * 0.3,
-                                        fit: BoxFit.cover,
-                                        image: NetworkImage(
-                                            _selectedSpotModel.images[0]),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SpotScreen(
+                                                          _selectedSpotModel,
+                                                          _spotRating)));
+                                        },
+                                        child: Image(
+                                          width: (sysWidth - 20) * 0.85,
+                                          height: sysHeight * 0.3,
+                                          fit: BoxFit.cover,
+                                          image: NetworkImage(
+                                              _selectedSpotModel.images[0]),
+                                        ),
                                       ),
                                       Column(
                                         crossAxisAlignment:
@@ -556,13 +567,22 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
                                                     "assets/profile.png"),
                                               ),
                                               onPressed: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            SpotScreen(
-                                                                _selectedSpotModel,
-                                                                _spotRating)));
+                                                // Navigator.push(
+                                                //     context,
+                                                //     MaterialPageRoute(
+                                                //         builder: (context) =>
+                                                //             SpotScreen(
+                                                //                 _selectedSpotModel,
+                                                //                 _spotRating)));
+
+                                                Resources
+                                                    .navigationKey.currentState
+                                                    .pushNamed('/viewProfile',
+                                                        arguments:
+                                                            _selectedSpotModel
+                                                                .userID);
+
+                                           
                                               }),
                                           IconButton(
                                             icon: ImageIcon(
