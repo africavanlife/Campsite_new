@@ -2,13 +2,13 @@ import 'dart:typed_data';
 
 import 'package:campsite/controller/spot_controller.dart';
 import 'package:campsite/model/spot.dart';
+import 'package:campsite/util/image_picker.dart';
 import 'package:campsite/util/resources.dart';
 import 'package:campsite/util/spot_detail.dart';
 
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
 
 class EditSpotScreen extends StatefulWidget {
   EditSpotScreen(this.spotModel);
@@ -24,37 +24,16 @@ class _EditSpotScreenState extends State<EditSpotScreen> {
 
   List<String> _imageTypes = List();
 
-  void SetPrint(bool ss) {
-    setState(() {
-      enableCarousal = ss;
+loadAssets(){
+    ImagePickerClass(context, (img, imageTypes) {
+      _imageTypes.addAll(imageTypes);
+      images.addAll(img);
+      setState(() {
+          enableCarousal = images.length > 0;
       images = images;
+      });
+      // setPrint(images.length > 0);
     });
-  }
-
-  Future<void> loadAssets() async {
-    List<Asset> resultList;
-    String error;
-
-    try {
-      resultList = await MultiImagePicker.pickImages(
-        maxImages: 300,
-      );
-
-      if (!mounted) return;
-
-      // setState(() async {
-      for (Asset asset in resultList) {
-        _imageTypes
-            .add(asset.name.split(".")[asset.name.split(".").length - 1]);
-        images.add((await asset.getByteData()).buffer.asUint8List());
-      }
-
-      // enableCarousal = images.length > 0;
-      SetPrint(images.length > 0);
-      // });
-    } on Exception catch (e) {
-      error = e.toString();
-    }
   }
 
   void updateData() {

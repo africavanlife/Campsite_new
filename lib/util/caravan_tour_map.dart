@@ -39,12 +39,12 @@ class _CaravanTourMapWidgetState extends State<CaravanTourMapWidget> {
         target: LatLng(positionCur.latitude, positionCur.longitude),
         zoom: 15)));
 
-    _markers[MarkerId("currMark")] = (Marker(
-      markerId: MarkerId("currMark"),
-      position: LatLng(positionCur.latitude, positionCur.longitude),
-      icon: Resources.currLocIconS,
-      onTap: () {},
-    ));
+    // _markers[MarkerId("currMark")] = (Marker(
+    //   markerId: MarkerId("currMark"),
+    //   position: LatLng(positionCur.latitude, positionCur.longitude),
+    //   icon: Resources.currLocIconS,
+    //   onTap: () {},
+    // ));
 
     setState(() {});
     print("onMapCreated");
@@ -248,6 +248,8 @@ class _CaravanTourMapWidgetState extends State<CaravanTourMapWidget> {
         : Stack(
             children: <Widget>[
               GoogleMap(
+                 myLocationButtonEnabled: false,
+                myLocationEnabled: true,
                 mapType: mapType,
                 initialCameraPosition: _kGooglePlex,
                 onMapCreated: _onMapCreated,

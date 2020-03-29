@@ -43,6 +43,33 @@ class SpotController {
         CreateList<SpotSeparateModel>(jsonDecode(response.body)).getList());
   }
 
+  Future<RequestResult> getNearBy(int dist, double lat, double lang) async {
+    final uri = Uri.http(Resources.ip, '/spot/near');
+    final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
+    final response = await http.post(uri,
+        headers: headers,
+        body: jsonEncode({"dist": dist, "lat": lat, "lang": lang}));
+
+    return RequestResult(
+        true, CreateList<SpotModel>(jsonDecode(response.body)).getList());
+  }
+
+  Future<RequestResult> filterBySpot(List spotTypes, SpotModel spotModel,
+      double lat, double long, int dist) async {
+    final uri = Uri.http(Resources.ip, '/spot/filterBySpot');
+    final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
+    final response = await http.post(uri,
+        headers: headers,
+        body: jsonEncode({
+          "spotModel": spotModel,
+          "spotTypes": spotTypes,
+          "location": {"dist": dist, "lat": lat, "long": long}
+        }));
+
+    return RequestResult(
+        true, CreateList<SpotModel>(jsonDecode(response.body)).getList());
+  }
+
   Future<RequestResult> save(List images, List imgTypes, [dynamic data]) async {
     List imgUrls = List();
     for (int i = 0; i < images.length; i++) {

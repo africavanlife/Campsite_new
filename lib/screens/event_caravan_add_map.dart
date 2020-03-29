@@ -15,7 +15,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
 
 class EventCaravanAddMap extends StatefulWidget {
   @override
@@ -77,12 +76,12 @@ class _EventCaravanAddMapState extends State<EventCaravanAddMap> {
         target: LatLng(positionCur.latitude, positionCur.longitude),
         zoom: 15)));
 
-    _markers[MarkerId("currMark")] = Marker(
-      markerId: MarkerId("currMark"),
-      position: LatLng(positionCur.latitude, positionCur.longitude),
-      icon: Resources.currLocIconS,
-      onTap: () {},
-    );
+    // _markers[MarkerId("currMark")] = Marker(
+    //   markerId: MarkerId("currMark"),
+    //   position: LatLng(positionCur.latitude, positionCur.longitude),
+    //   icon: Resources.currLocIconS,
+    //   onTap: () {},
+    // );
 
     _googleMapController = mapController;
     getLocation();
@@ -95,6 +94,8 @@ class _EventCaravanAddMapState extends State<EventCaravanAddMap> {
     return Stack(
       children: <Widget>[
         GoogleMap(
+           myLocationButtonEnabled: false,
+                myLocationEnabled: true,
           mapType: mapType,
           initialCameraPosition: _kInitialLocation,
           onMapCreated: _onMapCreated,

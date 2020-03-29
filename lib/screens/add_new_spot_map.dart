@@ -8,6 +8,7 @@ import 'package:campsite/model/accessibility.dart';
 import 'package:campsite/model/environment.dart';
 import 'package:campsite/model/necessities.dart';
 import 'package:campsite/model/activities.dart';
+import 'package:campsite/util/image_picker.dart';
 // import 'package:campsite/screens/add_new_spot_fill.dart';
 import 'package:campsite/util/resources.dart';
 import 'package:carousel_pro/carousel_pro.dart';
@@ -15,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
 
 class AddNewSpotMap extends StatefulWidget {
   @override
@@ -77,12 +77,12 @@ class _AddNewSpotMapState extends State<AddNewSpotMap> {
         target: LatLng(positionCur.latitude, positionCur.longitude),
         zoom: 15)));
 
-    _markers[MarkerId("currMark")] = Marker(
-      markerId: MarkerId("currMark"),
-      position: LatLng(positionCur.latitude, positionCur.longitude),
-      icon: Resources.currLocIconS,
-      onTap: () {},
-    );
+    // _markers[MarkerId("currMark")] = Marker(
+    //   markerId: MarkerId("currMark"),
+    //   position: LatLng(positionCur.latitude, positionCur.longitude),
+    //   icon: Resources.currLocIconS,
+    //   onTap: () {},
+    // );
 
     _googleMapController = mapController;
     getLocation();
@@ -95,6 +95,8 @@ class _AddNewSpotMapState extends State<AddNewSpotMap> {
     return Stack(
       children: <Widget>[
         GoogleMap(
+           myLocationButtonEnabled: false,
+                myLocationEnabled: true,
           mapType: mapType,
           initialCameraPosition: _kInitialLocation,
           onMapCreated: _onMapCreated,
@@ -211,34 +213,25 @@ class _AddNewSpotFormState extends State<AddNewSpotForm> {
 
   List<String> _imageTypes = List();
 
-  void setPrint(bool ss) async {
-    setState(() {
-      enableCorousal = ss;
-      images = images;
+  // void setPrint(bool ss) async {
+  //   setState(() {
+  //     enableCorousal = ss;
+  //     images = images;
+  //   });
+  //   // var url = await ImageController().save(_imageTypes[0], images[0]);
+  //   print(images);
+  // }
+
+  loadAssets() {
+    ImagePickerClass(context, (img, imageTypes) {
+      _imageTypes.addAll(imageTypes);
+      images.addAll(img);
+      setState(() {
+        enableCorousal = images.length > 0;
+        images = images;
+      });
+      // setPrint(images.length > 0);
     });
-    // var url = await ImageController().save(_imageTypes[0], images[0]);
-    // print(url);
-  }
-
-  Future<void> loadAssets() async {
-    List<Asset> resultList;
-
-    try {
-      resultList = await MultiImagePicker.pickImages(
-        maxImages: 300,
-      );
-
-      for (Asset asset in resultList) {
-        _imageTypes
-            .add(asset.name.split(".")[asset.name.split(".").length - 1]);
-        images.add((await asset.getByteData()).buffer.asUint8List());
-        // ass = (await asset.getByteData()).buffer;
-      }
-      // enableCarousal = images.length > 0;
-      setPrint(images.length > 0);
-    } on Exception catch (e) {
-      print(e.toString());
-    }
   }
 
   @override

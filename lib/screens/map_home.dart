@@ -35,8 +35,10 @@ class MapHomeScreen extends StatefulWidget {
 }
 
 class _MapHomeScreenState extends State<MapHomeScreen> {
+  int _nearestPlaces = 0;
   SpotModel _selectedSpotModel;
   SpotModel _filterSpotModel = SpotModel();
+  List<String> _filterSpotTypes = List();
   AccessibilityModel _accessibilityModel = AccessibilityModel();
   ActivitiesModel _activitiesModel = ActivitiesModel();
   EnvironmentModel _environmentModel = EnvironmentModel();
@@ -79,7 +81,6 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
     } else {
       setState(() {});
     }
-    print("WWWWWWWWWWWWW  : " + _favourite.toString());
   }
 
   Position positionCur = Position(latitude: 0, longitude: 0);
@@ -91,12 +92,12 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
         target: LatLng(positionCur.latitude, positionCur.longitude),
         zoom: 15)));
 
-    markers.add(Marker(
-      markerId: MarkerId("currMark"),
-      position: LatLng(positionCur.latitude, positionCur.longitude),
-      icon: currLocIcon,
-      onTap: () {},
-    ));
+    // markers.add(Marker(
+    //   markerId: MarkerId("currMark"),
+    //   position: LatLng(positionCur.latitude, positionCur.longitude),
+    //   icon: currLocIcon,
+    //   onTap: () {},
+    // ));
 
     setState(() {});
     print("onMapCreated");
@@ -216,12 +217,12 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
       }
 
       this.markers = tmpMarkers;
-      this.markers.add(Marker(
-            markerId: MarkerId("currMark"),
-            position: LatLng(positionCur.latitude, positionCur.longitude),
-            icon: currLocIcon,
-            onTap: () {},
-          ));
+      // this.markers.add(Marker(
+      //       markerId: MarkerId("currMark"),
+      //       position: LatLng(positionCur.latitude, positionCur.longitude),
+      //       icon: currLocIcon,
+      //       onTap: () {},
+      //     ));
     });
   }
 
@@ -235,13 +236,139 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
     );
   }
 
-  // getAddress() async {
-  //   final coordinates = new Coordinates(6.800408, 79.919674);
-  //   var addresses =
-  //       await Geocoder.local.findAddressesFromCoordinates(coordinates);
-  //   var first = addresses.first;
-  //   print("${first.locality} : ${first.subLocality}");
-  // }
+// isFilter for reset
+  filterSpot(bool isFilter) {
+    if (isFilter) {
+      SpotController()
+          .filterBySpot(
+              _filterSpotTypes,
+              _filterSpotModel,
+              positionCur.latitude,
+              positionCur.longitude,
+              _filterSliderVal.toInt() * 1000)
+          .then((result) => {
+                if (result.ok)
+                  {
+                    print(result.data.length),
+                    setState(() {
+                      wildSpot.clear();
+                      campsite.clear();
+                      rvPark.clear();
+                      parking.clear();
+                      list.clear();
+                      spotMap.clear();
+                      this.orginalMarkers.clear();
+
+                      for (SpotModel spotModel in result.data) {
+                        LatLng latlng = LatLng(
+                            spotModel.location.coordinates[1],
+                            spotModel.location.coordinates[0]);
+
+                        if (spotModel.spotType.toString() ==
+                            Resources.spotType[0]) {
+                          this.orginalMarkers.add(Marker(
+                                markerId: MarkerId(
+                                    "${latlng.hashCode}_wild@${spotModel.spotId}"),
+                                position: latlng,
+                                icon: Resources.wildSpotIconS,
+                                onTap: () {
+                                  setState(() {
+                                    _selectedSpotModel = spotModel;
+                                    print(_selectedSpotModel.spotId);
+                                    _markerDetailVisibility = true;
+                                  });
+                                },
+                              ));
+                          list.add(LatLngAndGeohash(latlng));
+                          spotMap[spotModel.spotId] = spotModel;
+                          wildSpot.add(latlng);
+                        }
+
+                        if (spotModel.spotType.toString() ==
+                            Resources.spotType[1]) {
+                          this.orginalMarkers.add(Marker(
+                                markerId: MarkerId(
+                                    "${latlng.hashCode}_camp@${spotModel.spotId}"),
+                                position: latlng,
+                                icon: Resources.wildSpotIconS,
+                                onTap: () {
+                                  setState(() {
+                                    print(_selectedSpotModel.spotId);
+                                    _selectedSpotModel = spotModel;
+                                    _markerDetailVisibility = true;
+                                  });
+                                },
+                              ));
+                          list.add(LatLngAndGeohash(latlng));
+                          spotMap[spotModel.spotId] = spotModel;
+                          campsite.add(latlng);
+                        }
+
+                        if (spotModel.spotType.toString() ==
+                            Resources.spotType[2]) {
+                          this.orginalMarkers.add(Marker(
+                                markerId: MarkerId(
+                                    "${latlng.hashCode}_rv@${spotModel.spotId}"),
+                                position: latlng,
+                                icon: Resources.wildSpotIconS,
+                                onTap: () {
+                                  setState(() {
+                                    print(_selectedSpotModel.spotId);
+                                    _selectedSpotModel = spotModel;
+                                    _markerDetailVisibility = true;
+                                  });
+                                },
+                              ));
+                          list.add(LatLngAndGeohash(latlng));
+                          spotMap[spotModel.spotId] = spotModel;
+                          rvPark.add(latlng);
+                        }
+
+                        if (spotModel.spotType.toString() ==
+                            Resources.spotType[3]) {
+                          this.orginalMarkers.add(Marker(
+                                markerId: MarkerId(
+                                    "${latlng.hashCode}_park@${spotModel.spotId}"),
+                                position: latlng,
+                                icon: Resources.wildSpotIconS,
+                                onTap: () {
+                                  setState(() {
+                                    print(_selectedSpotModel.spotId);
+                                    _selectedSpotModel = spotModel;
+                                    _markerDetailVisibility = true;
+                                  });
+                                },
+                              ));
+                          list.add(LatLngAndGeohash(latlng));
+                          spotMap[spotModel.spotId] = spotModel;
+                          parking.add(latlng);
+                        }
+                      }
+                      setIcons();
+                      print("SPOT CREATED");
+                      _filterScreenVisibility = false;
+                      initMemoryClustering();
+
+                      getNearestPlace(
+                        5000,
+                        filter: true,
+                        lat: positionCur.latitude,
+                        long: positionCur.longitude,
+                        spotModel: _filterSpotModel,
+                        spotTypes: _filterSpotTypes,
+                      );
+                      clusteringHelper.updateMap();
+                    })
+                  }
+              });
+    } else {
+      getAllMarkerPlaces();
+      _filterScreenVisibility = false;
+      initMemoryClustering();
+      getNearestPlace(5000, filter: true);
+      clusteringHelper.updateMap();
+    }
+  }
 
   @override
   void initState() {
@@ -256,6 +383,40 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
     getAllMarkerPlaces();
     super.initState();
     initMemoryClustering();
+    getNearestPlace(5000);
+  }
+
+  void getNearestPlace(int dist,
+      {bool filter = false,
+      List spotTypes,
+      SpotModel spotModel,
+      double lat,
+      double long}) async {
+    Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((position) {
+      if (!filter) {
+        SpotController()
+            .getNearBy(dist, position.latitude, position.longitude)
+            .then((result) {
+          if (result.ok) {
+            setState(() {
+              _nearestPlaces = result.data.length;
+            });
+          }
+        });
+      } else {
+        SpotController()
+            .filterBySpot(spotTypes, spotModel, lat, long, dist)
+            .then((result) {
+          if (result.ok) {
+            setState(() {
+              _nearestPlaces = result.data.length;
+            });
+          }
+        });
+      }
+    });
   }
 
   void getAllMarkerPlaces() async {
@@ -366,6 +527,8 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
         : Stack(
             children: <Widget>[
               GoogleMap(
+                myLocationButtonEnabled: false,
+                myLocationEnabled: true,
                 onTap: (argument) {
                   setState(() {
                     // _selectedSpotModel = null;
@@ -406,7 +569,7 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
                     Column(
                       children: <Widget>[
                         Text("NearBy", style: TextStyle(color: Colors.black)),
-                        Text("25 SPOTS AROUND YOU",
+                        Text("$_nearestPlaces SPOTS AROUND YOU",
                             style: TextStyle(color: Colors.black)),
                       ],
                     ),
@@ -567,22 +730,12 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
                                                     "assets/profile.png"),
                                               ),
                                               onPressed: () {
-                                                // Navigator.push(
-                                                //     context,
-                                                //     MaterialPageRoute(
-                                                //         builder: (context) =>
-                                                //             SpotScreen(
-                                                //                 _selectedSpotModel,
-                                                //                 _spotRating)));
-
                                                 Resources
                                                     .navigationKey.currentState
                                                     .pushNamed('/viewProfile',
                                                         arguments:
                                                             _selectedSpotModel
                                                                 .userID);
-
-                                           
                                               }),
                                           IconButton(
                                             icon: ImageIcon(
@@ -594,22 +747,6 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
                                       )
                                     ],
                                   ),
-                                  // Positioned(
-                                  //   right: -10,
-                                  //   top: -10,
-                                  //   child: IconButton(
-                                  //     icon: Icon(FontAwesomeIcons.timesCircle,
-                                  //         color: Colors.red),
-                                  //     onPressed: () {
-                                  //       setState(
-                                  //         () {
-                                  //           _selectedSpotModel = null;
-                                  //           _markerDetailVisibility = false;
-                                  //         },
-                                  //       );
-                                  //     },
-                                  //   ),
-                                  // ),
                                   Positioned(
                                     bottom: 10,
                                     left: 10,
@@ -690,7 +827,7 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
                                   ),
                                   onTap: () {
                                     setState(() {
-                                      _filterScreenVisibility = false;
+                                      filterSpot(true);
                                     });
                                   },
                                 ),
@@ -762,6 +899,19 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
                                             "assets/icons/wlid_spot_inactive.png",
                                         onTap: (status) {
                                           print(status);
+                                          if (status) {
+                                            if (!_filterSpotTypes.contains(
+                                                Resources.spotType[0])) {
+                                              _filterSpotTypes
+                                                  .add(Resources.spotType[0]);
+                                            }
+                                          } else {
+                                            if (_filterSpotTypes.contains(
+                                                Resources.spotType[0])) {
+                                              _filterSpotTypes.remove(
+                                                  Resources.spotType[0]);
+                                            }
+                                          }
                                         },
                                         initAct: false,
                                       ),
@@ -788,8 +938,21 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
                                             "assets/icons/park_inact.png",
                                         onTap: (status) {
                                           print(status);
+                                          if (status) {
+                                            if (!_filterSpotTypes.contains(
+                                                Resources.spotType[3])) {
+                                              _filterSpotTypes
+                                                  .add(Resources.spotType[3]);
+                                            }
+                                          } else {
+                                            if (_filterSpotTypes.contains(
+                                                Resources.spotType[3])) {
+                                              _filterSpotTypes.remove(
+                                                  Resources.spotType[3]);
+                                            }
+                                          }
                                         },
-                                        initAct: true,
+                                        initAct: false,
                                       ),
                                       SizedBox(
                                         width: 10,
@@ -823,6 +986,19 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
                                             "assets/icons/campsite_inact.png",
                                         onTap: (status) {
                                           print(status);
+                                          if (status) {
+                                            if (!_filterSpotTypes.contains(
+                                                Resources.spotType[1])) {
+                                              _filterSpotTypes
+                                                  .add(Resources.spotType[1]);
+                                            }
+                                          } else {
+                                            if (_filterSpotTypes.contains(
+                                                Resources.spotType[1])) {
+                                              _filterSpotTypes.remove(
+                                                  Resources.spotType[1]);
+                                            }
+                                          }
                                         },
                                         initAct: false,
                                       ),
@@ -849,8 +1025,21 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
                                             "assets/icons/Rv_park_inact.png",
                                         onTap: (status) {
                                           print(status);
+                                          if (status) {
+                                            if (!_filterSpotTypes.contains(
+                                                Resources.spotType[2])) {
+                                              _filterSpotTypes
+                                                  .add(Resources.spotType[2]);
+                                            }
+                                          } else {
+                                            if (_filterSpotTypes.contains(
+                                                Resources.spotType[2])) {
+                                              _filterSpotTypes.remove(
+                                                  Resources.spotType[2]);
+                                            }
+                                          }
                                         },
-                                        initAct: true,
+                                        initAct: false,
                                       ),
                                       SizedBox(
                                         width: 10,

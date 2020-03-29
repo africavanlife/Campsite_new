@@ -17,6 +17,18 @@ class EventController {
         true, CreateList<EventModel>(jsonDecode(response.body)).getList());
   }
 
+  Future<RequestResult> filterByEvent(List eventTypes, int dateoffset) async {
+    print(eventTypes.first);
+    final uri = Uri.http(Resources.ip, '/event/filterByEvent');
+    final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
+    final response = await http.post(uri,
+        headers: headers,
+        body: jsonEncode({"eventTypes": eventTypes, "dateoffset": dateoffset}));
+
+    return RequestResult(
+        true, CreateList<EventModel>(jsonDecode(response.body)).getList());
+  }
+
   Future<RequestResult> getById(String id) async {
     final uri = Uri.http(Resources.ip, '/event/$id');
     final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
@@ -27,7 +39,7 @@ class EventController {
 
   Future<RequestResult> save(Uint8List images, String imgTypes,
       [dynamic data]) async {
-        print(data);
+    print(data);
     String imgUrls = "";
     var url = await ImageController().save(imgTypes, images);
     imgUrls = (url);

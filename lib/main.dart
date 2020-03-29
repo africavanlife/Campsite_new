@@ -1,5 +1,6 @@
 import 'package:campsite/screens/home.dart';
 import 'package:campsite/screens/welcome.dart';
+import 'package:campsite/util/test.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.dark(),
       home: SafeArea(
           child: WelcomeScreen()),
-      // home: SafeArea(child: HomeScreen()),
+      // home: SafeArea(child: Test()),
     );
   }
 }

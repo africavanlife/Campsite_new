@@ -39,7 +39,7 @@ class _SpotDetailsState extends State<SpotDetails> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        widget.filter && !widget.show
+        !widget.filter && !widget.show
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,6 +96,7 @@ class _SpotDetailsState extends State<SpotDetails> {
                 child: Row(
                   children: <Widget>[
                     AIconButtons(
+                      
                       show,
                       actImageUrl: "assets/PavedRoad_act.png",
                       inactImageUrl: "assets/PavedRoad_inact.png",
