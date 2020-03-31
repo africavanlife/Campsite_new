@@ -623,7 +623,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                             icon: Icon(
                               FontAwesomeIcons.arrowLeft,
                               color: Colors.white,
-                              size: 50,
+                              size: 30,
                             ),
                             onPressed: () {
                               if (Resources.navigationKey.currentState
@@ -633,7 +633,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                             }),
                       ),
                       Container(
-                        width: sysWidth * 0.4,
+                        width: sysWidth * 0.3,
                         child: ButtonTheme(
                           shape: RoundedRectangleBorder(
                             side: BorderSide(
@@ -659,12 +659,15 @@ class _ProfileScreenState extends State<ProfileScreen>
                                 Text(
                                   "EDIT PROFILE",
                                   style: TextStyle(
+                                    fontSize: 10,
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 ImageIcon(
+                                  
                                   AssetImage("assets/editprofile.png"),
                                   color: Colors.white,
+                                  size: 15,
                                 ),
                               ],
                             ),

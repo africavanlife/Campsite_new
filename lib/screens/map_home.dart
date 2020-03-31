@@ -35,6 +35,7 @@ class MapHomeScreen extends StatefulWidget {
 }
 
 class _MapHomeScreenState extends State<MapHomeScreen> {
+  double _zoomLevel = 10;
   int _nearestPlaces = 0;
   SpotModel _selectedSpotModel;
   SpotModel _filterSpotModel = SpotModel();
@@ -53,13 +54,10 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
   bool _filterScreenVisibility = false;
   double _filterSliderVal = 170;
   bool show = false;
-  CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
+  CameraPosition _kGooglePlex;
   GoogleMapController _googleMapController;
 
-  double currZoomLevel = 15;
+  double currZoomLevel;
   List<LatLngAndGeohash> list = List();
 
   ClusteringHelper clusteringHelper;
@@ -90,7 +88,7 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
 
     mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: LatLng(positionCur.latitude, positionCur.longitude),
-        zoom: 15)));
+        zoom: _zoomLevel)));
 
     // markers.add(Marker(
     //   markerId: MarkerId("currMark"),
@@ -372,6 +370,11 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
 
   @override
   void initState() {
+    currZoomLevel = _zoomLevel;
+    _kGooglePlex = CameraPosition(
+      target: LatLng(37.42796133580664, -122.085749655962),
+      zoom: _zoomLevel,
+    );
     // getAddress();
     _filterSpotModel.accessibility = _accessibilityModel;
     _filterSpotModel.activities = _activitiesModel;
@@ -620,7 +623,7 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
                             CameraUpdate.newCameraPosition(CameraPosition(
                                 target: LatLng(
                                     position.latitude, position.longitude),
-                                zoom: 15)));
+                                zoom: _zoomLevel)));
                       },
                       icon: Icon(FontAwesomeIcons.crosshairs),
                     ),

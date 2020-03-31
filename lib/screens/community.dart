@@ -27,6 +27,7 @@ class CommunityScreen extends StatefulWidget {
 }
 
 class _CommunityScreenState extends State<CommunityScreen> {
+  double _zoomLevel = 10;
   bool _progressBarActive = true;
   Color layerIconColor = Colors.black;
   Color positionIconColor = Colors.black;
@@ -37,10 +38,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
   int _filterSliderVal = 0;
   List<String> _filterTypeList = List();
   bool show = false;
-  CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
+  CameraPosition _kGooglePlex;
   GoogleMapController _googleMapController;
 
   List<List<LatLng>> caravanToursList = List();
@@ -54,7 +52,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
         target: LatLng(positionCur.latitude, positionCur.longitude),
-        zoom: 15)));
+        zoom: _zoomLevel)));
 
     // markers.add(Marker(
     //   markerId: MarkerId("currMark"),
@@ -70,6 +68,10 @@ class _CommunityScreenState extends State<CommunityScreen> {
 
   @override
   void initState() {
+    _kGooglePlex = CameraPosition(
+      target: LatLng(37.42796133580664, -122.085749655962),
+      zoom: _zoomLevel,
+    );
     super.initState();
     setIcons();
     setMarkers(false);
@@ -340,6 +342,12 @@ class _CommunityScreenState extends State<CommunityScreen> {
         : Stack(
             children: <Widget>[
               GoogleMap(
+                onTap: (argument) {
+                  setState(() {
+                    // _selectedSpotModel = null;
+                    _markerDetailVisibility = false;
+                  });
+                },
                 myLocationButtonEnabled: false,
                 myLocationEnabled: true,
                 onMapCreated: _onMapCreated,
@@ -419,7 +427,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                             CameraUpdate.newCameraPosition(CameraPosition(
                                 target: LatLng(
                                     position.latitude, position.longitude),
-                                zoom: 15)));
+                                zoom: _zoomLevel)));
                         setState(() {
                           positionIconColor = Colors.red;
                         });
@@ -466,75 +474,86 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                         image:
                                             NetworkImage(_selectedEvent.images),
                                       ),
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      _selectedEvent.eventType == null
-                                          ? Container()
-                                          : _selectedEvent.eventType ==
-                                                  Resources.eventType[2]
-                                              ? Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      // "Starting : ${_selectedEvent.spotID == null ? "" : _selectedEvent.spotID.length < 1 ? "" : getAddress(_selectedEvent.spotID[0]).then((value) => value)}",
-                                                      "Starting : ${_selectedEvent.spotID.length < 1 ? "" : _selectedEvent.spotID[0]}",
-                                                      style: TextStyle(
-                                                          color: Resources
-                                                              .mainBlackColor),
-                                                    ),
-                                                    Text(
-                                                      "|",
-                                                      style: TextStyle(
-                                                          color: Resources
-                                                              .mainBlackColor),
-                                                    ),
-                                                    Text(
-                                                      // "Ending : ${_selectedEvent.spotID == null ? "" : _selectedEvent.spotID.length < 1 ? "" : getAddress(_selectedEvent.spotID[_selectedEvent.spotID.length - 1])}",
-                                                      "Ending : ${_selectedEvent.spotID.length < 1 ? "" : _selectedEvent.spotID[_selectedEvent.spotID.length - 1]}",
-                                                      style: TextStyle(
-                                                          color: Resources
-                                                              .mainBlackColor),
-                                                    )
-                                                  ],
-                                                )
-                                              : Text(
-                                                  "City : ${_startingAddress == null ? "" : _startingAddress}",
-                                                  // "City : ${_selectedEvent.spotID == null ? "" : _selectedEvent.spotID.length < 1 ? "" : getAddress(_selectedEvent.spotID[0]).then((value) => value)}",
-                                                  style: TextStyle(
-                                                      color: Resources
-                                                          .mainBlackColor),
-                                                ),
-                                      Row(
-                                        children: <Widget>[
-                                          _profile.profPic == null
-                                              ? Container()
-                                              : CircleAvatar(
-                                                  backgroundImage: NetworkImage(
-                                                      _profile.profPic),
-                                                  radius: 20,
-                                                ),
-                                          Text(
-                                            _profile.profileName == null
-                                                ? ""
-                                                : _profile.profileName,
-                                            style: TextStyle(
-                                                color:
-                                                    Resources.mainBlackColor),
-                                          ),
-                                        ],
-                                      ),
-                                      Icon(
-                                        FontAwesomeIcons.crosshairs,
-                                        color: Resources.mainBlackColor,
-                                      )
-                                    ],
+                                Container(
+                                  color: _selectedEvent.eventType ==
+                                          Resources.eventType[0]
+                                      ? Color.fromRGBO(248, 160, 0, 0.5)
+                                      : _selectedEvent.eventType ==
+                                              Resources.eventType[1]
+                                          ? Color.fromRGBO(18, 169, 104, 0.5)
+                                          : Color.fromRGBO(217, 33, 33, 0.5),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        _selectedEvent.eventType == null
+                                            ? Container()
+                                            : _selectedEvent.eventType ==
+                                                    Resources.eventType[2]
+                                                ? Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        // "Starting : ${_selectedEvent.spotID == null ? "" : _selectedEvent.spotID.length < 1 ? "" : getAddress(_selectedEvent.spotID[0]).then((value) => value)}",
+                                                        "Starting : ${_selectedEvent.spotID.length < 1 ? "" : _selectedEvent.spotID[0]}",
+                                                        style: TextStyle(
+                                                            color: Resources
+                                                                .mainBlackColor),
+                                                      ),
+                                                      Text(
+                                                        "|",
+                                                        style: TextStyle(
+                                                            color: Resources
+                                                                .mainBlackColor),
+                                                      ),
+                                                      Text(
+                                                        // "Ending : ${_selectedEvent.spotID == null ? "" : _selectedEvent.spotID.length < 1 ? "" : getAddress(_selectedEvent.spotID[_selectedEvent.spotID.length - 1])}",
+                                                        "Ending : ${_selectedEvent.spotID.length < 1 ? "" : _selectedEvent.spotID[_selectedEvent.spotID.length - 1]}",
+                                                        style: TextStyle(
+                                                            color: Resources
+                                                                .mainBlackColor),
+                                                      )
+                                                    ],
+                                                  )
+                                                : Text(
+                                                    "City : ${_startingAddress == null ? "" : _startingAddress}",
+                                                    // "City : ${_selectedEvent.spotID == null ? "" : _selectedEvent.spotID.length < 1 ? "" : getAddress(_selectedEvent.spotID[0]).then((value) => value)}",
+                                                    style: TextStyle(
+                                                        color: Resources
+                                                            .mainBlackColor),
+                                                  ),
+                                        Row(
+                                          children: <Widget>[
+                                            _profile.profPic == null
+                                                ? Container()
+                                                : CircleAvatar(
+                                                    backgroundImage:
+                                                        NetworkImage(
+                                                            _profile.profPic),
+                                                    radius: 20,
+                                                  ),
+                                            Text(
+                                              _profile.profileName == null
+                                                  ? ""
+                                                  : _profile.profileName,
+                                              style: TextStyle(
+                                                  color:
+                                                      Resources.mainBlackColor),
+                                            ),
+                                          ],
+                                        ),
+                                        Icon(
+                                          FontAwesomeIcons.crosshairs,
+                                          color: Resources.mainBlackColor,
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 )
                               ],
@@ -591,21 +610,21 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                     ),
                                   ),
                                 )),
-                            Positioned(
-                              right: -10,
-                              top: -10,
-                              child: IconButton(
-                                icon: Icon(FontAwesomeIcons.timesCircle,
-                                    color: Colors.red),
-                                onPressed: () {
-                                  setState(
-                                    () {
-                                      _markerDetailVisibility = false;
-                                    },
-                                  );
-                                },
-                              ),
-                            )
+                            // Positioned(
+                            //   right: -10,
+                            //   top: -10,
+                            //   child: IconButton(
+                            //     icon: Icon(FontAwesomeIcons.timesCircle,
+                            //         color: Colors.red),
+                            //     onPressed: () {
+                            //       setState(
+                            //         () {
+                            //           _markerDetailVisibility = false;
+                            //         },
+                            //       );
+                            //     },
+                            //   ),
+                            // )
                           ],
                         ),
                       ),
@@ -719,7 +738,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   show,
                                   title: "Campsite Cleanup",
                                   value: _filterTypeList
-                                            .contains(Resources.eventType[1]),
+                                      .contains(Resources.eventType[1]),
                                   width: sysWidth,
                                   onChange: (value) {
                                     setState(() {
@@ -744,7 +763,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   show,
                                   title: "Caravan Tours",
                                   value: _filterTypeList
-                                            .contains(Resources.eventType[2]),
+                                      .contains(Resources.eventType[2]),
                                   width: sysWidth,
                                   onChange: (value) {
                                     setState(() {
@@ -769,7 +788,7 @@ class _CommunityScreenState extends State<CommunityScreen> {
                                   show,
                                   title: "Meetup",
                                   value: _filterTypeList
-                                            .contains(Resources.eventType[0]),
+                                      .contains(Resources.eventType[0]),
                                   width: sysWidth,
                                   onChange: (value) {
                                     setState(() {

@@ -1,7 +1,6 @@
-import 'dart:async';
+
 import 'dart:typed_data';
 
-import 'package:campsite/controller/image_controller.dart';
 import 'package:campsite/model/location.dart';
 import 'package:campsite/model/spot.dart';
 import 'package:campsite/model/accessibility.dart';
@@ -9,11 +8,9 @@ import 'package:campsite/model/environment.dart';
 import 'package:campsite/model/necessities.dart';
 import 'package:campsite/model/activities.dart';
 import 'package:campsite/util/image_picker.dart';
-// import 'package:campsite/screens/add_new_spot_fill.dart';
 import 'package:campsite/util/resources.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -95,6 +92,12 @@ class _AddNewSpotMapState extends State<AddNewSpotMap> {
     return Stack(
       children: <Widget>[
         GoogleMap(
+           onTap: (argument) {
+                  setState(() {
+                    // _selectedSpotModel = null;
+                    _markerDetailVisibility = false;
+                  });
+                },
            myLocationButtonEnabled: false,
                 myLocationEnabled: true,
           mapType: mapType,
@@ -143,21 +146,21 @@ class _AddNewSpotMapState extends State<AddNewSpotMap> {
                                   ),
                           ),
                         ),
-                        Positioned(
-                          right: -10,
-                          top: -10,
-                          child: IconButton(
-                            icon: Icon(FontAwesomeIcons.timesCircle,
-                                color: Colors.red),
-                            onPressed: () {
-                              setState(
-                                () {
-                                  _markerDetailVisibility = false;
-                                },
-                              );
-                            },
-                          ),
-                        )
+                        // Positioned(
+                        //   right: -10,
+                        //   top: -10,
+                        //   child: IconButton(
+                        //     icon: Icon(FontAwesomeIcons.timesCircle,
+                        //         color: Colors.red),
+                        //     onPressed: () {
+                        //       setState(
+                        //         () {
+                        //           _markerDetailVisibility = false;
+                        //         },
+                        //       );
+                        //     },
+                        //   ),
+                        // )
                       ],
                     ),
                   ),
