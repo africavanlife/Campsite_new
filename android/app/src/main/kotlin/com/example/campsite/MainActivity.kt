@@ -1,4 +1,4 @@
-package com.example.campsite
+package com.sevensynco.campsite
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

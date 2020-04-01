@@ -39,8 +39,16 @@ class SpotController {
     final uri = Uri.http(Resources.ip, '/spot/separateByUser/$userID');
     final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
     final response = await http.get(uri, headers: headers);
-    return RequestResult(true,
-        CreateList<SpotSeparateModel>(jsonDecode(response.body)).getList());
+    if (response.body.length == 4 ||
+        response.body == "" ||
+        response.body == "null" ||
+        response.body == null) {
+      print("AAAAAAAAAAAAAA  ::" + response.body);
+      return RequestResult(true, []);
+    } else {
+      return RequestResult(true,
+          CreateList<SpotSeparateModel>(jsonDecode(response.body)).getList());
+    }
   }
 
   Future<RequestResult> getNearBy(int dist, double lat, double lang) async {

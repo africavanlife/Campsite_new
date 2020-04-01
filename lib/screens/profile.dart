@@ -49,21 +49,24 @@ class _ProfileScreenState extends State<ProfileScreen>
   List _friends = List();
   getFriends(String userID) async {
     RequestResult _req = await FriendsController().getByUser(userID);
-    for (var userID in _req.data.first.friends) {
-      RequestResult _reqProf = await ProfileController().getById(userID);
+
+    if (_req.data != null && _req.data.length > 0) {
+      for (var userID in _req.data.first.friends) {
+        RequestResult _reqProf = await ProfileController().getById(userID);
+        setState(() {
+          _profiles[userID] = _reqProf.data.first;
+        });
+      }
       setState(() {
-        _profiles[userID] = _reqProf.data.first;
+        _friends = _req.data.first.friends;
       });
     }
-    setState(() {
-      _friends = _req.data.first.friends;
-    });
   }
 
   int checkingNumbers = 0;
   getCheckinsByUser(String userID) async {
     await CheckinController().getByUser(userID).then((value) {
-      if (value.ok) {
+      if (value.ok && value.data.length > 0) {
         setState(() {
           checkingNumbers = value.data.length;
         });
@@ -340,7 +343,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                               children: <Widget>[
                                                 Text("CLEANUPS"),
                                                 Text(
-                                                  "12",
+                                                  "0",
                                                   style:
                                                       TextStyle(fontSize: 30),
                                                 )
@@ -405,7 +408,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                                       Column(
                                         children: <Widget>[
                                           Text("VAN NAME"),
-                                          SizedBox(height: 20,),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
                                           Text(
                                             // "ANZAVAN",
                                             _profileModel.vanName == null
@@ -419,7 +424,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                                       Column(
                                         children: <Widget>[
                                           Text("VEHIVLE TYPE"),
-                                          SizedBox(height: 20,),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
                                           Text(
                                             // "VW T3",
                                             _profileModel.vehicleType == null
@@ -433,7 +440,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                                       Column(
                                         children: <Widget>[
                                           Text("TRAVELLER STATUS"),
-                                          SizedBox(height: 20,),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
                                           Text(
                                             // "Full Time",
                                             _profileModel.travStatus == null
@@ -469,7 +478,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                                         onMapCreated: _onMapCreated,
                                         mapType: mapType,
                                         initialCameraPosition: CameraPosition(
-                                          target: wildSpot.first,
+                                          target: wildSpot.length > 0
+                                              ? wildSpot.first
+                                              : LatLng(0, 0),
                                           zoom: 14.4746,
                                         ),
                                         markers: markers,
@@ -659,12 +670,11 @@ class _ProfileScreenState extends State<ProfileScreen>
                                 Text(
                                   "EDIT PROFILE",
                                   style: TextStyle(
-                                    fontSize: 10,
+                                      fontSize: 10,
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 ImageIcon(
-                                  
                                   AssetImage("assets/editprofile.png"),
                                   color: Colors.white,
                                   size: 15,

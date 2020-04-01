@@ -13,24 +13,48 @@ class FriendsController {
     final uri = Uri.http(Resources.ip, '/friends');
     final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
     final response = await http.get(uri, headers: headers);
+     if (response.body.length == 4 ||
+        response.body == "" ||
+        response.body == "null" ||
+        response.body == null) {
+      print("AAAAAAAAAAAAAA  ::" + response.body);
+      return RequestResult(true, []);
+    } else {
     return RequestResult(
         true, CreateList<FriendsModel>(jsonDecode(response.body)).getList());
+    }
   }
 
   Future<RequestResult> getByUser(String userID) async {
     final uri = Uri.http(Resources.ip, '/friends/byUser/$userID');
     final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
     final response = await http.get(uri, headers: headers);
+     if (response.body.length == 4 ||
+        response.body == "" ||
+        response.body == "null" ||
+        response.body == null) {
+      print("AAAAAAAAAAAAAA  ::" + response.body);
+      return RequestResult(true, []);
+    } else {
     return RequestResult(
         true, CreateList<FriendsModel>(jsonDecode(response.body)).getList());
+    }
   }
 
    Future<RequestResult> getByFriend(String userID) async {
     final uri = Uri.http(Resources.ip, '/friends/byFriend/$userID');
     final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
     final response = await http.get(uri, headers: headers);
+     if (response.body.length == 4 ||
+        response.body == "" ||
+        response.body == "null" ||
+        response.body == null) {
+      print("AAAAAAAAAAAAAA  ::" + response.body);
+      return RequestResult(true, []);
+    } else {
     return RequestResult(
         true, CreateList<FriendsModel>(jsonDecode(response.body)).getList());
+    }
   }
 
   Future<RequestResult> save(FriendsModel data) async {

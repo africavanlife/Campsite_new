@@ -1,7 +1,11 @@
+import 'package:campsite/controller/profile_controller.dart';
+import 'package:campsite/model/profile.dart';
 import 'package:campsite/screens/login.dart';
 import 'package:campsite/util/resources.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SignupFormScreen extends StatefulWidget {
   @override
@@ -10,7 +14,10 @@ class SignupFormScreen extends StatefulWidget {
 
 class _SignupFormScreenState extends State<SignupFormScreen> {
   final _formKey = GlobalKey<FormState>();
-
+  TextEditingController _txtEmail = TextEditingController();
+  TextEditingController _txtPassword = TextEditingController();
+  TextEditingController _txtName = TextEditingController();
+  TextEditingController _txtVanName = TextEditingController();
   @override
   Widget build(BuildContext context) {
     double sysHeight = MediaQuery.of(context).size.height;
@@ -38,6 +45,7 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
                     child: Column(
                       children: <Widget>[
                         TextFormField(
+                          controller: _txtName,
                           decoration: InputDecoration(
                               labelText: "Name*",
                               labelStyle:
@@ -51,6 +59,7 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
                           },
                         ),
                         TextFormField(
+                          controller: _txtEmail,
                           decoration: InputDecoration(
                               labelText: "Email*",
                               labelStyle:
@@ -64,6 +73,7 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
                           },
                         ),
                         TextFormField(
+                          controller: _txtVanName,
                           decoration: InputDecoration(
                               labelText: "Van Name",
                               labelStyle:
@@ -76,20 +86,21 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
                             return null;
                           },
                         ),
+                        // TextFormField(
+                        //   decoration: InputDecoration(
+                        //       labelText: "Traveller Status",
+                        //       labelStyle:
+                        //           TextStyle(color: Resources.mainBlackColor)),
+                        //   style: TextStyle(color: Resources.mainBlackColor),
+                        //   validator: (value) {
+                        //     if (value.isEmpty) {
+                        //       return 'Please Enter Traveller Status';
+                        //     }
+                        //     return null;
+                        //   },
+                        // ),
                         TextFormField(
-                          decoration: InputDecoration(
-                              labelText: "Traveller Status",
-                              labelStyle:
-                                  TextStyle(color: Resources.mainBlackColor)),
-                          style: TextStyle(color: Resources.mainBlackColor),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Please Enter Traveller Status';
-                            }
-                            return null;
-                          },
-                        ),
-                        TextFormField(
+                          controller: _txtPassword,
                           obscureText: true,
                           decoration: InputDecoration(
                               labelText: "Password",
@@ -113,6 +124,8 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
                           validator: (value) {
                             if (value.isEmpty) {
                               return 'Please Enter same password';
+                            } else if (value != _txtPassword.text) {
+                              return 'Cannot Match with other.';
                             }
                             return null;
                           },
@@ -134,13 +147,67 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
                                   height: MediaQuery.of(context).size.height *
                                       0.075,
                                   child: RaisedButton(
-                                    onPressed: () {
-                                      if (_formKey.currentState.validate()) {}
-                                      Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  LoginScreen()));
+                                    onPressed: () async {
+                                      if (_formKey.currentState.validate()) {
+                                        FirebaseAuth _auth =
+                                            FirebaseAuth.instance;
+                                        _auth
+                                            .createUserWithEmailAndPassword(
+                                              email: _txtEmail.text,
+                                              password: _txtPassword.text,
+                                            )
+                                            .then((value) => {
+                                                  ProfileController()
+                                                      .save(ProfileModel(
+                                                          id: value.user.uid,
+                                                          isVerified: false,
+                                                          profileName:
+                                                              _txtName.text,
+                                                          vanName:
+                                                              _txtVanName.text))
+                                                      .then((value) => {
+                                                            if (value.ok)
+                                                              {
+                                                                Fluttertoast.showToast(
+                                                                    msg:
+                                                                        "Account has created. PLease log in",
+                                                                    toastLength:
+                                                                        Toast
+                                                                            .LENGTH_SHORT,
+                                                                    gravity: ToastGravity
+                                                                        .BOTTOM,
+                                                                    timeInSecForIos:
+                                                                        1,
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .red,
+                                                                    textColor:
+                                                                        Colors
+                                                                            .white,
+                                                                    fontSize:
+                                                                        16.0),
+                                                                Navigator.pushReplacement(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                LoginScreen()))
+                                                              }
+                                                          }) // value.user
+                                                })
+                                            .catchError((e) {
+                                          print(e);
+                                          Fluttertoast.showToast(
+                                              msg:
+                                                  "There was an error. Please Try again.",
+                                              toastLength: Toast.LENGTH_SHORT,
+                                              gravity: ToastGravity.BOTTOM,
+                                              timeInSecForIos: 1,
+                                              backgroundColor: Colors.red,
+                                              textColor: Colors.white,
+                                              fontSize: 16.0);
+                                        });
+                                      }
                                     },
                                     child: Text(
                                       "Signup",

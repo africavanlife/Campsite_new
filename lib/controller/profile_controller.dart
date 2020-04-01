@@ -13,11 +13,20 @@ class ProfileController {
     final uri = Uri.http(Resources.ip, '/profile');
     final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
     final response = await http.get(uri, headers: headers);
+     if (response.body.length == 4 ||
+        response.body == "" ||
+        response.body == "null" ||
+        response.body == null) {
+      print("AAAAAAAAAAAAAA  ::" + response.body);
+      return RequestResult(true, []);
+    } else {
     return RequestResult(
         true, CreateList<ProfileModel>(jsonDecode(response.body)).getList());
   }
+  }
 
-  Future<RequestResult> save([dynamic data]) async {
+  Future<RequestResult> save(ProfileModel data) async {
+    
     final uri = Uri.http(Resources.ip, '/profile');
     final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
     final response =
@@ -60,8 +69,17 @@ class ProfileController {
     final uri = Uri.http(Resources.ip, '/profile/$id');
     // final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
     final response = await http.get(uri);
-    print(response);
-    return RequestResult(
-        true, CreateList<ProfileModel>(jsonDecode(response.body)).getList());
+    print(response.body.length);
+    if (response.body.length == 4 ||
+        response.body == "" ||
+        response.body == "null" ||
+        response.body == null) {
+      print("AAAAAAAAAAAAAA  ::" + response.body);
+      return RequestResult(true, []);
+    } else {
+      print("PPPPPPP   :  " + response.body);
+      return RequestResult(
+          true, CreateList<ProfileModel>(jsonDecode(response.body)).getList());
+    }
   }
 }

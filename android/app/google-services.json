@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "62134387697",
+    "firebase_url": "https://africavanlife-5613d.firebaseio.com",
+    "project_id": "africavanlife-5613d",
+    "storage_bucket": "africavanlife-5613d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62134387697:android:4d1fa335617aa783c47a50",
+        "android_client_info": {
+          "package_name": "com.sevensynco.campsite"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "62134387697-fksd8qm542pev42bt2huc632c7ag7kkj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCn7Q4bZVzytdpO_SGTV5_kfQFVCOkKySw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "62134387697-fksd8qm542pev42bt2huc632c7ag7kkj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -3,10 +3,12 @@ import 'package:campsite/model/profile.dart';
 import 'package:campsite/resources/RequestResult.dart';
 import 'package:campsite/screens/allInOne.dart';
 import 'package:campsite/screens/community.dart';
+import 'package:campsite/screens/login.dart';
 import 'package:campsite/screens/main_content.dart';
 import 'package:campsite/screens/map_home.dart';
 import 'package:campsite/screens/profile.dart';
 import 'package:campsite/util/resources.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bmnav/bmnav.dart' as bmnav;
 
@@ -31,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    print("PPPPPPPPPPPPPPPPPPPPPPPPP  ::: " + Resources.userId);
     getUserDetails(Resources.userId);
     super.initState();
   }
@@ -55,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
                       CircleAvatar(
-                        backgroundImage: NetworkImage(_profileModel == null
+                        backgroundImage: NetworkImage(_profileModel.profPic == null
                             ? 'https://img.traveltriangle.com/blog/wp-content/tr:w-700,h-400/uploads/2015/06/Demodara-Nine-Arch-Bridge.jpg'
                             : _profileModel.profPic),
                         radius: 70,
@@ -167,7 +170,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     FlatButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          FirebaseAuth.instance.signOut().then((value) => {
+                                setState(() {
+                                  Resources.userId = "";
+                                }),
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => LoginScreen()))
+                              });
+                        },
                         child: Text(
                           "Logout",
                           style: TextStyle(color: Colors.grey, fontSize: 10),

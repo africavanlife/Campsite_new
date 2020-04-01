@@ -1,7 +1,13 @@
+import 'package:campsite/controller/profile_controller.dart';
+import 'package:campsite/model/profile.dart';
 import 'package:campsite/screens/home.dart';
 import 'package:campsite/screens/signup_home.dart';
+import 'package:campsite/util/resources.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -9,6 +15,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  TextEditingController _txtEmail = TextEditingController();
+  TextEditingController _txtPassword = TextEditingController();
   @override
   Widget build(BuildContext context) {
     double sysHeight = MediaQuery.of(context).size.height;
@@ -54,8 +62,64 @@ class _LoginScreenState extends State<LoginScreen> {
                               "assets/fb_icon.png",
                               width: sysWidth * 0.15,
                             ),
-                            onTap: () {
+                            onTap: () async {
                               print("SSS");
+                              final facebookLogin = FacebookLogin();
+                              final result =
+                                  await facebookLogin.logIn(['email']);
+
+                              print(result.accessToken.token);
+                              FirebaseAuth.instance
+                                  .signInWithCredential(
+                                      FacebookAuthProvider.getCredential(
+                                          accessToken:
+                                              result.accessToken.token))
+                                  .then((value) => {
+                                        print(value.user.uid),
+                                        ProfileController()
+                                            .getById(value.user.uid)
+                                            .then((data) => {
+                                                  if (data.data.length > 0)
+                                                    {
+                                                      setState(() {
+                                                        Resources.userId =
+                                                            value.user.uid;
+                                                      }),
+                                                      Navigator.pushReplacement(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  HomeScreen()))
+                                                    }
+                                                  else
+                                                    {
+                                                      ProfileController()
+                                                          .save(ProfileModel(
+                                                            id: value.user.uid,
+                                                            profileName: value
+                                                                .user
+                                                                .displayName,
+                                                            profPic: value
+                                                                .user.photoUrl,
+                                                            isVerified: false,
+                                                          ))
+                                                          .then((saved) => {
+                                                                setState(() {
+                                                                  Resources
+                                                                          .userId =
+                                                                      value.user
+                                                                          .uid;
+                                                                }),
+                                                                Navigator.pushReplacement(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                HomeScreen()))
+                                                              })
+                                                    }
+                                                })
+                                      });
                             },
                           ),
                           GestureDetector(
@@ -103,6 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 30,
                       ),
                       TextField(
+                        controller: _txtEmail,
                         decoration: InputDecoration(
                             labelText: "Email",
                             labelStyle: TextStyle(color: Colors.white)),
@@ -112,6 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 10,
                       ),
                       TextField(
+                        controller: _txtPassword,
                         decoration: InputDecoration(
                             labelText: "Password",
                             labelStyle: TextStyle(color: Colors.white)),
@@ -129,11 +195,43 @@ class _LoginScreenState extends State<LoginScreen> {
                           minWidth: double.infinity,
                           height: MediaQuery.of(context).size.height * 0.075,
                           child: RaisedButton(
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => HomeScreen()));
+                            onPressed: () async {
+                              FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                      email: _txtEmail.text,
+                                      password: _txtPassword.text)
+                                  .then((value) => {
+                                        Resources.userId = value.user.uid,
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    HomeScreen()))
+                                      })
+                                  .catchError((e) {
+                                print(e);
+                                Fluttertoast.showToast(
+                                    msg: "No Such Account",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIos: 1,
+                                    backgroundColor: Colors.red,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0);
+                              });
+
+                              // final FirebaseUser user =
+                              //     (await _auth.createUserWithEmailAndPassword(
+                              //   email: "abcd@gmail.com",
+                              //   password: "123456",
+                              // ))
+                              //         .user;
+                              // print(user.uid);
+
+                              // Navigator.pushReplacement(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) => HomeScreen()));
                             },
                             child: Text(
                               "Login",
