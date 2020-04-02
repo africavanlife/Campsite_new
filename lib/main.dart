@@ -3,10 +3,22 @@ import 'package:campsite/screens/welcome.dart';
 import 'package:campsite/util/test.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:simple_auth_flutter/simple_auth_flutter.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+      SimpleAuthFlutter.init(context);
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

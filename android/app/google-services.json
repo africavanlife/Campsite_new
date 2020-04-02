@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "62134387697-9emhl4rkqp835lk1k2et08pul27uh2te.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sevensynco.campsite",
+            "certificate_hash": "1469aa7a9353cd6b6fb158a8c5533cb43120ae09"
+          }
+        },
+        {
           "client_id": "62134387697-fksd8qm542pev42bt2huc632c7ag7kkj.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -30,6 +38,13 @@
             {
               "client_id": "62134387697-fksd8qm542pev42bt2huc632c7ag7kkj.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "62134387697-9mdcdodjpggdmue8f2iplnugd2rkj30b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.sevensynco.campsite"
+              }
             }
           ]
         }

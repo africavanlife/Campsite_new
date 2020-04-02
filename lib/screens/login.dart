@@ -8,6 +8,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:simple_auth/simple_auth.dart' as simpleAuth;
+import 'package:simple_auth_flutter/simple_auth_flutter.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -127,8 +130,69 @@ class _LoginScreenState extends State<LoginScreen> {
                               "assets/google_icon.jpg",
                               width: sysWidth * 0.15,
                             ),
-                            onTap: () {
+                            onTap: () async {
+                              // GoogleSignIn().signIn().then((data) => {
+                              //       data.authentication
+                              //           .then((value) => {print(value.idToken)})
+                              //     });
                               print("SSS");
+                              final result = await GoogleSignIn().signIn();
+
+                              // print((await result.authentication).idToken);
+                              FirebaseAuth.instance
+                                  .signInWithCredential(
+                                      GoogleAuthProvider.getCredential(
+                                          idToken: (await result.authentication)
+                                              .idToken,
+                                          accessToken:
+                                              (await result.authentication)
+                                                  .accessToken))
+                                  .then((value) => {
+                                        print(value.user.uid),
+                                        ProfileController()
+                                            .getById(value.user.uid)
+                                            .then((data) => {
+                                                  if (data.data.length > 0)
+                                                    {
+                                                      setState(() {
+                                                        Resources.userId =
+                                                            value.user.uid;
+                                                      }),
+                                                      Navigator.pushReplacement(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  HomeScreen()))
+                                                    }
+                                                  else
+                                                    {
+                                                      ProfileController()
+                                                          .save(ProfileModel(
+                                                            id: value.user.uid,
+                                                            profileName: value
+                                                                .user
+                                                                .displayName,
+                                                            profPic: value
+                                                                .user.photoUrl,
+                                                            isVerified: false,
+                                                          ))
+                                                          .then((saved) => {
+                                                                setState(() {
+                                                                  Resources
+                                                                          .userId =
+                                                                      value.user
+                                                                          .uid;
+                                                                }),
+                                                                Navigator.pushReplacement(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                HomeScreen()))
+                                                              })
+                                                    }
+                                                })
+                                      });
                             },
                           ),
                           GestureDetector(

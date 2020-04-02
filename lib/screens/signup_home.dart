@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class SignupHomeScreen extends StatefulWidget {
   @override
@@ -122,8 +123,65 @@ class _SignupHomeScreenState extends State<SignupHomeScreen> {
                               "assets/google_icon.jpg",
                               width: sysWidth * 0.2,
                             ),
-                            onTap: () {
+                            onTap: ()async {
                               print("SSS");
+                                final result = await GoogleSignIn().signIn();
+
+                              // print((await result.authentication).idToken);
+                              FirebaseAuth.instance
+                                  .signInWithCredential(
+                                      GoogleAuthProvider.getCredential(
+                                          idToken: (await result.authentication)
+                                              .idToken,
+                                          accessToken:
+                                              (await result.authentication)
+                                                  .accessToken))
+                                  .then((value) => {
+                                        print(value.user.uid),
+                                        ProfileController()
+                                            .getById(value.user.uid)
+                                            .then((data) => {
+                                                  if (data.data.length > 0)
+                                                    {
+                                                      setState(() {
+                                                        Resources.userId =
+                                                            value.user.uid;
+                                                      }),
+                                                      Navigator.pushReplacement(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  HomeScreen()))
+                                                    }
+                                                  else
+                                                    {
+                                                      ProfileController()
+                                                          .save(ProfileModel(
+                                                            id: value.user.uid,
+                                                            profileName: value
+                                                                .user
+                                                                .displayName,
+                                                            profPic: value
+                                                                .user.photoUrl,
+                                                            isVerified: false,
+                                                          ))
+                                                          .then((saved) => {
+                                                                setState(() {
+                                                                  Resources
+                                                                          .userId =
+                                                                      value.user
+                                                                          .uid;
+                                                                }),
+                                                                Navigator.pushReplacement(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                HomeScreen()))
+                                                              })
+                                                    }
+                                                })
+                                      });
                             },
                           ),
                           GestureDetector(
