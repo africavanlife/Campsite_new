@@ -89,85 +89,92 @@ class _AddNewSpotMapState extends State<AddNewSpotMap> {
   Widget build(BuildContext context) {
     double sysHeight = MediaQuery.of(context).size.height;
     double sysWidth = MediaQuery.of(context).size.width;
-    return Stack(
-      children: <Widget>[
-        GoogleMap(
-           onTap: (argument) {
-                  setState(() {
-                    // _selectedSpotModel = null;
-                    _markerDetailVisibility = false;
-                  });
-                },
-           myLocationButtonEnabled: false,
-                myLocationEnabled: true,
-          mapType: mapType,
-          initialCameraPosition: _kInitialLocation,
-          onMapCreated: _onMapCreated,
-          onCameraMove: (CameraPosition position) {
-            if (_markers.length > 0) {
-              Marker marker = _markers[MarkerId("1")];
-              Marker updatedMarker = marker.copyWith(
-                positionParam: position.target,
-              );
+    return Theme(
+      data: ThemeData(
+          brightness: Brightness.dark,
+          inputDecorationTheme: InputDecorationTheme(
+              focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Resources.mainColor)))),
+          child: Stack(
+        children: <Widget>[
+          GoogleMap(
+             onTap: (argument) {
+                    setState(() {
+                      // _selectedSpotModel = null;
+                      _markerDetailVisibility = false;
+                    });
+                  },
+             myLocationButtonEnabled: false,
+                  myLocationEnabled: true,
+            mapType: mapType,
+            initialCameraPosition: _kInitialLocation,
+            onMapCreated: _onMapCreated,
+            onCameraMove: (CameraPosition position) {
+              if (_markers.length > 0) {
+                Marker marker = _markers[MarkerId("1")];
+                Marker updatedMarker = marker.copyWith(
+                  positionParam: position.target,
+                );
 
-              setState(() {
-                _markers[MarkerId("1")] = updatedMarker;
-              });
-              print(position.target.toString());
-            }
-          },
-          markers: Set<Marker>.of(_markers.values),
-        ),
-        Positioned(
-            bottom: 0,
-            left: 0,
-            child: Visibility(
-              visible: _markerDetailVisibility,
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Container(
-                    width: sysWidth - 20,
-                    // height: sysHeight * 0.3,
-                    color: Resources.mainWhiteColor,
-                    child: Stack(
-                      children: <Widget>[
-                        Container(
-                          // color: Colors.white38,
-                          color: Resources.mainWhiteColor,
-                          width: MediaQuery.of(context).size.width,
-                          child: Padding(
-                            padding: EdgeInsets.all(10),
-                            child: _markers[MarkerId("1")] == null
-                                ? Container()
-                                : AddNewSpotForm(
-                                    cordinates:
-                                        _markers[MarkerId("1")].position,
-                                  ),
+                setState(() {
+                  _markers[MarkerId("1")] = updatedMarker;
+                });
+                print(position.target.toString());
+              }
+            },
+            markers: Set<Marker>.of(_markers.values),
+          ),
+          Positioned(
+              bottom: 0,
+              left: 0,
+              child: Visibility(
+                visible: _markerDetailVisibility,
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Container(
+                      width: sysWidth - 20,
+                      // height: sysHeight * 0.3,
+                      color: Resources.mainWhiteColor,
+                      child: Stack(
+                        children: <Widget>[
+                          Container(
+                            // color: Colors.white38,
+                            color: Resources.mainWhiteColor,
+                            width: MediaQuery.of(context).size.width,
+                            child: Padding(
+                              padding: EdgeInsets.all(10),
+                              child: _markers[MarkerId("1")] == null
+                                  ? Container()
+                                  : AddNewSpotForm(
+                                      cordinates:
+                                          _markers[MarkerId("1")].position,
+                                    ),
+                            ),
                           ),
-                        ),
-                        // Positioned(
-                        //   right: -10,
-                        //   top: -10,
-                        //   child: IconButton(
-                        //     icon: Icon(FontAwesomeIcons.timesCircle,
-                        //         color: Colors.red),
-                        //     onPressed: () {
-                        //       setState(
-                        //         () {
-                        //           _markerDetailVisibility = false;
-                        //         },
-                        //       );
-                        //     },
-                        //   ),
-                        // )
-                      ],
+                          // Positioned(
+                          //   right: -10,
+                          //   top: -10,
+                          //   child: IconButton(
+                          //     icon: Icon(FontAwesomeIcons.timesCircle,
+                          //         color: Colors.red),
+                          //     onPressed: () {
+                          //       setState(
+                          //         () {
+                          //           _markerDetailVisibility = false;
+                          //         },
+                          //       );
+                          //     },
+                          //   ),
+                          // )
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            )),
-      ],
+              )),
+        ],
+      ),
     );
   }
 }

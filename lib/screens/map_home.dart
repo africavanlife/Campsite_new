@@ -83,6 +83,8 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
 
   Position positionCur = Position(latitude: 0, longitude: 0);
   void _onMapCreated(GoogleMapController mapController) async {
+    _googleMapController = mapController;
+    clusteringHelper.mapController = mapController;
     positionCur = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
@@ -99,8 +101,7 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
 
     setState(() {});
     print("onMapCreated");
-    _googleMapController = mapController;
-    clusteringHelper.mapController = mapController;
+    
     clusteringHelper.updateMap();
   }
 

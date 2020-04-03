@@ -11,6 +11,7 @@ import 'package:campsite/util/resources.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bmnav/bmnav.dart' as bmnav;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -58,7 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
                       CircleAvatar(
-                        backgroundImage: NetworkImage(_profileModel.profPic == null
+                        backgroundImage: NetworkImage(_profileModel == null ||
+                                _profileModel.profPic == null
                             ? 'https://img.traveltriangle.com/blog/wp-content/tr:w-700,h-400/uploads/2015/06/Demodara-Nine-Arch-Bridge.jpg'
                             : _profileModel.profPic),
                         radius: 70,
@@ -170,7 +172,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     FlatButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          await prefs.setString('userID', "");
                           FirebaseAuth.instance.signOut().then((value) => {
                                 setState(() {
                                   Resources.userId = "";

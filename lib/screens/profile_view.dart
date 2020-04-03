@@ -93,21 +93,25 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
   List _friends = List();
   getFriends(String userID) async {
     RequestResult _req = await FriendsController().getByUser(userID);
-    for (var userID in _req.data.first.friends) {
-      RequestResult _reqProf = await ProfileController().getById(userID);
+    if (_req.data.length > 0) {
+      for (var userID in _req.data.first.friends) {
+        RequestResult _reqProf = await ProfileController().getById(userID);
+        setState(() {
+          _profiles[userID] = _reqProf.data.first;
+        });
+      }
       setState(() {
-        _profiles[userID] = _reqProf.data.first;
+        _friends = _req.data.first.friends;
       });
     }
-    setState(() {
-      _friends = _req.data.first.friends;
-    });
   }
 
   Set<Marker> markers = Set();
   void _onMapCreated(GoogleMapController mapController) async {
     print("onMapCreated");
-    _googleMapController = mapController;
+    setState(() {
+      _googleMapController = mapController;
+    });
   }
 
   ProfileModel _profileModel = ProfileModel();
@@ -176,17 +180,19 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
           icon: Resources.rvParkIconS,
         ));
       }
-      _googleMapController
-          .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        target: wildSpot.length > 0
-            ? wildSpot.first
-            : campsite.length > 0
-                ? campsite.first
-                : parking.length > 0
-                    ? parking.first
-                    : rvPark.length > 0 ? rvPark.first : LatLng(0, 0),
-        zoom: 14.4746,
-      )));
+      if (_googleMapController != null) {
+        _googleMapController
+            .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+          target: wildSpot.length > 0
+              ? wildSpot.first
+              : campsite.length > 0
+                  ? campsite.first
+                  : parking.length > 0
+                      ? parking.first
+                      : rvPark.length > 0 ? rvPark.first : LatLng(0, 0),
+          zoom: 14.4746,
+        )));
+      }
     });
   }
 
@@ -351,7 +357,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
                                                 children: <Widget>[
                                                   Text("CLEANUPS"),
                                                   Text(
-                                                    "12",
+                                                    "0",
                                                     style:
                                                         TextStyle(fontSize: 30),
                                                   )

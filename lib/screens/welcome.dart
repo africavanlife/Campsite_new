@@ -1,8 +1,15 @@
+import 'package:campsite/screens/home.dart';
 import 'package:campsite/screens/login.dart';
 import 'package:campsite/util/resources.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
+  @override
+  _WelcomeScreenState createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     Resources.setIcons();
@@ -64,11 +71,24 @@ class WelcomeScreen extends StatelessWidget {
                     minWidth: double.infinity,
                     height: MediaQuery.of(context).size.height * 0.075,
                     child: RaisedButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginScreen()));
+                      onPressed: () async {
+                        SharedPreferences prefs =
+                            await SharedPreferences.getInstance();
+                        String userID = prefs.getString('userID');
+                        if (userID != null && userID != "") {
+                          setState(() {
+                            Resources.userId = userID;
+                          });
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeScreen()));
+                        } else {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginScreen()));
+                        }
                       },
                       // child: Text(
                       //   "Get Started",

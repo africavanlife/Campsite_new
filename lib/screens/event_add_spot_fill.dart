@@ -42,141 +42,148 @@ class _EventAddNewSpotFillState extends State<EventAddNewSpotFill> {
         ? Center(
             child: CircularProgressIndicator(),
           )
-        : SingleChildScrollView(
-            padding: EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SpotDetails(
-                  show: false,
-                  spotModel: widget.spotModal,
-                  onSpotChange: (spotModel) {
-                    setState(() {
-                      widget.spotModal = spotModel;
-                    });
-                  },
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text("Did you love this Place?"),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  children: <Widget>[
-                    RatingBar(
-                      maxRating: 5,
-                      onRatingChanged: (rating) {
-                        print(rating);
-                        setState(() {
-                          _reviewModel.rate = rating.toInt();
-                        });
-                      },
-                      filledIcon: FontAwesomeIcons.solidCircle,
-                      emptyIcon: FontAwesomeIcons.solidCircle,
-                      isHalfAllowed: false,
-                      filledColor: Resources.mainColor,
-                      emptyColor: Colors.grey,
-                      size: 48,
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text("Tag this Post"),
-                SizedBox(
-                  height: 10,
-                ),
-                Wrap(
-                  children: <Widget>[
-                    TagWidget(
-                      "We never want to leave",
-                      onClicked: (status) {},
-                    ),
-                    TagWidget(
-                      "Fun for kids",
-                      onClicked: (status) {},
-                    ),
-                    TagWidget(
-                      "Isolated",
-                      onClicked: (status) {},
-                    ),
-                    TagWidget(
-                      "Great Stargazing",
-                      onClicked: (status) {},
-                    ),
-                    TagWidget(
-                      "Just Overnight",
-                      onClicked: (status) {},
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                TextField(
-                  decoration: InputDecoration(labelText: "Add Review : "),
-                  onChanged: (value) {
-                    setState(() {
-                      _reviewModel.review = value;
-                    });
-                  },
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Center(
-                  child: Container(
-                    width: sysWidth * 0.5,
-                    child: ButtonTheme(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      buttonColor: Colors.red,
-                      minWidth: double.infinity,
-                      height: sysHeight * 0.05,
-                      child: RaisedButton(
-                        onPressed: () async {
+        : Theme(
+      data: ThemeData(
+          brightness: Brightness.dark,
+          inputDecorationTheme: InputDecorationTheme(
+              focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Resources.mainColor)))),
+                  child: SingleChildScrollView(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SpotDetails(
+                    show: false,
+                    spotModel: widget.spotModal,
+                    onSpotChange: (spotModel) {
+                      setState(() {
+                        widget.spotModal = spotModel;
+                      });
+                    },
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text("Did you love this Place?"),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      RatingBar(
+                        maxRating: 5,
+                        onRatingChanged: (rating) {
+                          print(rating);
                           setState(() {
-                            _progressBar = true;
-                          });
-                          SpotController().save(
-                              widget.images,
-                              widget.imageTypes,
-                              [widget.spotModal, _reviewModel]).then((value) {
-                            if (value.ok) {
-                              setState(() {
-                                _progressBar = false;
-                              });
-                              Fluttertoast.showToast(
-                                  msg: "Succeddfully Spot Added !",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.BOTTOM,
-                                  timeInSecForIos: 1,
-                                  backgroundColor: Colors.red,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0);
-                              Navigator.pop(context,
-                                  "${widget.spotModal.location.coordinates[1]},${widget.spotModal.location.coordinates[1]}@${value.data[0].spotId}");
-                            } else {
-                              print("FAILED");
-                            }
+                            _reviewModel.rate = rating.toInt();
                           });
                         },
-                        child: Text(
-                          "SAVE",
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
+                        filledIcon: FontAwesomeIcons.solidCircle,
+                        emptyIcon: FontAwesomeIcons.solidCircle,
+                        isHalfAllowed: false,
+                        filledColor: Resources.mainColor,
+                        emptyColor: Colors.grey,
+                        size: 48,
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text("Tag this Post"),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Wrap(
+                    children: <Widget>[
+                      TagWidget(
+                        "We never want to leave",
+                        onClicked: (status) {},
+                      ),
+                      TagWidget(
+                        "Fun for kids",
+                        onClicked: (status) {},
+                      ),
+                      TagWidget(
+                        "Isolated",
+                        onClicked: (status) {},
+                      ),
+                      TagWidget(
+                        "Great Stargazing",
+                        onClicked: (status) {},
+                      ),
+                      TagWidget(
+                        "Just Overnight",
+                        onClicked: (status) {},
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  TextField(
+                    decoration: InputDecoration(labelText: "Add Review : "),
+                    onChanged: (value) {
+                      setState(() {
+                        _reviewModel.review = value;
+                      });
+                    },
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Center(
+                    child: Container(
+                      width: sysWidth * 0.5,
+                      child: ButtonTheme(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        buttonColor: Colors.red,
+                        minWidth: double.infinity,
+                        height: sysHeight * 0.05,
+                        child: RaisedButton(
+                          onPressed: () async {
+                            setState(() {
+                              _progressBar = true;
+                            });
+                            SpotController().save(
+                                widget.images,
+                                widget.imageTypes,
+                                [widget.spotModal, _reviewModel]).then((value) {
+                              if (value.ok) {
+                                setState(() {
+                                  _progressBar = false;
+                                });
+                                Fluttertoast.showToast(
+                                    msg: "Succeddfully Spot Added !",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIos: 1,
+                                    backgroundColor: Colors.red,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0);
+                                Navigator.pop(context,
+                                    "${widget.spotModal.location.coordinates[1]},${widget.spotModal.location.coordinates[1]}@${value.data[0].spotId}");
+                              } else {
+                                print("FAILED");
+                              }
+                            });
+                          },
+                          child: Text(
+                            "SAVE",
+                            style: TextStyle(
+                                color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          );
+        );
   }
 }
 

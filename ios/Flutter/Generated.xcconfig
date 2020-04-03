@@ -1,10 +1,10 @@
 // This is a generated file; do not edit or check into version control.
-FLUTTER_ROOT=/Users/thevanlifeappafrica/Desktop/campsite_new/flutter
-FLUTTER_APPLICATION_PATH=/Users/thevanlifeappafrica/Desktop/campsite_new/campsite
-FLUTTER_TARGET=/Users/thevanlifeappafrica/Desktop/campsite_new/campsite/lib/main.dart
+FLUTTER_ROOT=E:\Program Files\flutter
+FLUTTER_APPLICATION_PATH=E:\Flutter\Campsite_new
+FLUTTER_TARGET=lib\main.dart
 FLUTTER_BUILD_DIR=build
-SYMROOT=${SOURCE_ROOT}/../build/ios
-FLUTTER_FRAMEWORK_DIR=/Users/thevanlifeappafrica/Desktop/campsite_new/flutter/bin/cache/artifacts/engine/ios
+SYMROOT=${SOURCE_ROOT}/../build\ios
+OTHER_LDFLAGS=$(inherited) -framework Flutter
+FLUTTER_FRAMEWORK_DIR=E:\Program Files\flutter\bin\cache\artifacts\engine\ios
 FLUTTER_BUILD_NAME=1.0.0
 FLUTTER_BUILD_NUMBER=1
-TRACK_WIDGET_CREATION=true

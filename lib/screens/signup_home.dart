@@ -9,6 +9,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:simple_auth/simple_auth.dart' as simpleAuth;
 
 class SignupHomeScreen extends StatefulWidget {
   @override
@@ -16,6 +18,11 @@ class SignupHomeScreen extends StatefulWidget {
 }
 
 class _SignupHomeScreenState extends State<SignupHomeScreen> {
+  setLogin(String id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userID', id);
+  }
+
   @override
   Widget build(BuildContext context) {
     double sysHeight = MediaQuery.of(context).size.height;
@@ -83,6 +90,7 @@ class _SignupHomeScreenState extends State<SignupHomeScreen> {
                                                     {
                                                       Resources.userId =
                                                           value.user.uid,
+                                                      setLogin(value.user.uid),
                                                       Navigator.pushReplacement(
                                                           context,
                                                           MaterialPageRoute(
@@ -123,9 +131,9 @@ class _SignupHomeScreenState extends State<SignupHomeScreen> {
                               "assets/google_icon.jpg",
                               width: sysWidth * 0.2,
                             ),
-                            onTap: ()async {
+                            onTap: () async {
                               print("SSS");
-                                final result = await GoogleSignIn().signIn();
+                              final result = await GoogleSignIn().signIn();
 
                               // print((await result.authentication).idToken);
                               FirebaseAuth.instance
@@ -146,6 +154,8 @@ class _SignupHomeScreenState extends State<SignupHomeScreen> {
                                                       setState(() {
                                                         Resources.userId =
                                                             value.user.uid;
+                                                        setLogin(
+                                                            value.user.uid);
                                                       }),
                                                       Navigator.pushReplacement(
                                                           context,
@@ -191,6 +201,63 @@ class _SignupHomeScreenState extends State<SignupHomeScreen> {
                             ),
                             onTap: () {
                               print("SSS");
+
+                              simpleAuth.InstagramApi(
+                                      "instagram",
+                                      "515236689420399",
+                                      "208f43abcddd356c02f511b30377cacf",
+                                      "https://africavanlife-5613d.firebaseapp.com/__/auth/handler",
+                                      scopes: ['user_profile'])
+                                  .authenticate()
+                                  .then((value) => {
+                                        print(value.toJson()['user_id']),
+                                        print(value.toJson()['token']),
+                                        ProfileController()
+                                            .getById(value.toJson()['user_id'])
+                                            .then((data) => {
+                                                  if (data.data.length > 0)
+                                                    {
+                                                      setState(() {
+                                                        Resources.userId = value
+                                                            .toJson()['user_id']
+                                                            .toString();
+                                                        setLogin(value
+                                                            .toJson()['user_id']
+                                                            .toString());
+                                                      }),
+                                                      Navigator.pushReplacement(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  HomeScreen()))
+                                                    }
+                                                  else
+                                                    {
+                                                      ProfileController()
+                                                          .save(ProfileModel(
+                                                            id: value.toJson()[
+                                                                'user_id'],
+                                                            isVerified: false,
+                                                          ))
+                                                          .then((saved) => {
+                                                                setState(() {
+                                                                  Resources
+                                                                      .userId = value
+                                                                          .toJson()[
+                                                                      'user_id'];
+                                                                }),
+                                                                Navigator.pushReplacement(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                HomeScreen()))
+                                                              })
+                                                    }
+                                                })
+                                      })
+                                  // {print("PPPPPPPPPPPPPP    :    " + value.userData)})
+                                  .catchError((e) => {print(e)});
                             },
                           )
                         ],
