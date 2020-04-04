@@ -8,6 +8,7 @@ import 'package:campsite/controller/profile_controller.dart';
 import 'package:campsite/controller/review_controller.dart';
 import 'package:campsite/controller/spot_controller.dart';
 import 'package:campsite/model/SpotSeparate.dart';
+import 'package:campsite/model/favourite.dart';
 import 'package:campsite/model/profile.dart';
 import 'package:campsite/model/spot.dart';
 import 'package:campsite/resources/RequestResult.dart';
@@ -15,7 +16,7 @@ import 'package:campsite/screens/edit_profile.dart';
 import 'package:campsite/screens/spot.dart';
 import 'package:campsite/util/resources.dart';
 import 'package:campsite/util/profile_map.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -111,10 +112,9 @@ class _ProfileScreenState extends State<ProfileScreen>
   getFavourites(String userID) async {
     RequestResult _req =
         await FavouriteController().getByUser(Resources.userId);
-
     _favourite.clear();
     if (_req.data != null && _req.data.length > 0) {
-      for (var spot in _req.data) {
+      for (var spot in _req.data.first.spotID) {
         await SpotController().getById(spot).then((value) {
           setState(() {
             _favourite.add(value.data.first);
@@ -124,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     } else {
       setState(() {});
     }
-    // print("WWWWWWWWWWWWW  : " + _favourite.toString());
+    print("WWWWWWWWWWWWW  : " + _favourite.toString());
   }
 
   setMarkers() {
@@ -238,6 +238,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     double sysHeight = MediaQuery.of(context).size.height;
     double sysWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: _progressBarActive == true
           ? Center(child: CircularProgressIndicator())
           : Stack(
@@ -373,7 +374,14 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                 AssetImage("assets/instg.png"),
                                                 color: Resources.mainColor,
                                               ),
-                                              onPressed: () {}),
+                                              onPressed: () async {
+                                                  var instaUrl =
+                                                      "http://instagram.com/_u/${_profileModel.instaAcc}";
+                                                  await canLaunch(instaUrl)
+                                                      ? launch(instaUrl)
+                                                      : print(
+                                                          "open instagram app link or do a snackbar with notification that there is no instagram installed");
+                                                }),
                                           SizedBox(
                                             width: 10,
                                           ),
@@ -382,7 +390,14 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                   AssetImage(
                                                       "assets/whatsapp.png"),
                                                   color: Resources.mainColor),
-                                              onPressed: () {})
+                                               onPressed: () async {
+                                                  var whatsappUrl =
+                                                      "whatsapp://send?phone=${_profileModel.whatsappAcc}";
+                                                  await canLaunch(whatsappUrl)
+                                                      ? launch(whatsappUrl)
+                                                      : print(
+                                                          "open whatsapp app link or do a snackbar with notification that there is no whatsapp installed");
+                                                }),
                                         ],
                                       ),
                                       Row(
@@ -563,6 +578,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                                             child: Column(
                                               children: <Widget>[
                                                 Image(
+                                                  height: 150,
+                                                  width: sysWidth*0.5,
                                                   image: NetworkImage(
                                                       _favourite[index]
                                                           .images

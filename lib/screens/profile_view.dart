@@ -13,11 +13,11 @@ import 'package:campsite/resources/RequestResult.dart';
 import 'package:campsite/screens/edit_profile.dart';
 import 'package:campsite/util/resources.dart';
 import 'package:campsite/util/profile_map.dart';
-
+import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ProfileViewScreen extends StatefulWidget {
@@ -29,6 +29,7 @@ class ProfileViewScreen extends StatefulWidget {
 
 class _ProfileViewScreenState extends State<ProfileViewScreen>
     with SingleTickerProviderStateMixin {
+  bool init = false;
   bool _progressBarActive = true;
   final List<Tab> tabs = <Tab>[
     new Tab(text: "Favourite Spots"),
@@ -215,10 +216,13 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
   @override
   Widget build(BuildContext context) {
     String userID = ModalRoute.of(context).settings.arguments;
-    getUserDetails(userID);
-    getCheckinsByUser(userID);
-    getSpotsByUser(userID);
-    setMarkers();
+    if (!init) {
+      getUserDetails(userID);
+      getCheckinsByUser(userID);
+      getSpotsByUser(userID);
+      setMarkers();
+      init = true;
+    }
     double sysHeight = MediaQuery.of(context).size.height;
     double sysWidth = MediaQuery.of(context).size.width;
     return Theme(
@@ -227,6 +231,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
               focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Resources.mainColor)))),
       child: Scaffold(
+        resizeToAvoidBottomPadding: false,
         body: _progressBarActive == true
             ? Center(child: CircularProgressIndicator())
             : Stack(
@@ -255,8 +260,14 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
                                             height: sysHeight * 0.3,
                                             // image: NetworkImage(
                                             //     'https://img.traveltriangle.com/blog/wp-content/tr:w-700,h-400/uploads/2015/06/Demodara-Nine-Arch-Bridge.jpg'),
-                                            image: NetworkImage(
-                                                _profileModel.coverPic),
+                                            image: (_profileModel.coverPic !=
+                                                        null &&
+                                                    _profileModel.coverPic !=
+                                                        "")
+                                                ? NetworkImage(
+                                                    _profileModel.coverPic)
+                                                : AssetImage(
+                                                    'assets/add_image.png'),
                                             fit: BoxFit.cover,
                                           )
                                         : Container(
@@ -286,18 +297,55 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
                                                   "assets/addFriend_act.png")
                                               : Image.asset(
                                                   "assets/addFriend.png"),
-                                          onTap: () {
+                                          onTap: () async {
                                             if (_friends.contains(userID)) {
                                               _friends.remove(userID);
                                             } else {
                                               _friends.add(userID);
                                             }
+
                                             FriendsController()
-                                                .update(
-                                                    Resources.userId, _friends)
-                                                .then((value) {
-                                              setState(() {});
-                                            });
+                                                .getByUser(Resources.userId)
+                                                .then((friends) => {
+                                                      if (friends.data.length <
+                                                          1)
+                                                        {
+                                                          if (_friends.length >
+                                                              0)
+                                                            {
+                                                              print("AAAAAAAAAAAAAAAAAAAA     " +
+                                                                  friends.data
+                                                                      .length
+                                                                      .toString()),
+                                                              FriendsController()
+                                                                  .save(FriendsModel(
+                                                                      userID: Resources
+                                                                          .userId,
+                                                                      friends:
+                                                                          _friends))
+                                                                  .then(
+                                                                      (value) {
+                                                                setState(() {});
+                                                              }),
+                                                            }
+                                                        }
+                                                      else
+                                                        {
+                                                          print("BBBBBBBBBBBBBBBBBBBBBBBB     " +
+                                                              friends
+                                                                  .data.length
+                                                                  .toString()),
+                                                          FriendsController()
+                                                              .update(
+                                                                  Resources
+                                                                      .userId,
+                                                                  _friends)
+                                                              .then((value) {
+                                                            setState(() {});
+                                                          }),
+                                                        }
+                                                    });
+
                                             // FriendsModel(friends: )
                                           }),
                                     ),
@@ -388,7 +436,14 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
                                                       "assets/instg.png"),
                                                   color: Resources.mainColor,
                                                 ),
-                                                onPressed: () {}),
+                                                onPressed: () async {
+                                                  var instaUrl =
+                                                      "http://instagram.com/_u/${_profileModel.instaAcc}";
+                                                  await canLaunch(instaUrl)
+                                                      ? launch(instaUrl)
+                                                      : print(
+                                                          "open instagram app link or do a snackbar with notification that there is no instagram installed");
+                                                }),
                                             SizedBox(
                                               width: 10,
                                             ),
@@ -397,7 +452,14 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
                                                     AssetImage(
                                                         "assets/whatsapp.png"),
                                                     color: Resources.mainColor),
-                                                onPressed: () {})
+                                                onPressed: () async {
+                                                  var whatsappUrl =
+                                                      "whatsapp://send?phone=${_profileModel.whatsappAcc}";
+                                                  await canLaunch(whatsappUrl)
+                                                      ? launch(whatsappUrl)
+                                                      : print(
+                                                          "open whatsapp app link or do a snackbar with notification that there is no whatsapp installed");
+                                                }),
                                           ],
                                         ),
                                       ],

@@ -29,6 +29,7 @@ class _SignupFormScreenState extends State<SignupFormScreen> {
               focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Resources.mainColor)))),
           child: Scaffold(
+            resizeToAvoidBottomPadding: false,
         body: Container(
           width: double.infinity,
           child: Stack(

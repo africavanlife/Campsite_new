@@ -13,6 +13,7 @@ import 'package:campsite/util/icon_buttons.dart';
 import 'package:campsite/util/resources.dart';
 import 'package:campsite/util/review.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoder/geocoder.dart';
 
@@ -31,7 +32,7 @@ class _CommunityDetailsScreenState extends State<CommunityDetailsScreen> {
     _reviews.clear();
     _reviewUsers.clear();
     RequestResult _req = await ReviewController().getAllBySpot(eventID);
-  setState(() {
+    setState(() {
       _reviews = _req.data;
     });
     for (ReviewModel _review in _reviews) {
@@ -40,7 +41,6 @@ class _CommunityDetailsScreenState extends State<CommunityDetailsScreen> {
         _reviewUsers[_review.userID] = (_rq.data.first);
       });
     }
-  
   }
 
   getStartAddress(String spotID) async {
@@ -82,12 +82,6 @@ class _CommunityDetailsScreenState extends State<CommunityDetailsScreen> {
       _profileModel = _req.data.first;
     });
   }
-
-
-
-
-
-  
 
   bool isInitialized = false;
   @override
@@ -300,7 +294,11 @@ class _CommunityDetailsScreenState extends State<CommunityDetailsScreen> {
                         width: sysWidth * 0.05,
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          FlutterShareMe().shareToWhatsApp(
+                              msg:
+                                  "This is shared by Campsite. https://www.campsite.com}");
+                        },
                         child: Container(
                           width: sysWidth * 0.4,
                           decoration: BoxDecoration(

@@ -1,5 +1,9 @@
+import 'dart:convert';
 import 'dart:ui';
-
+import 'package:campsite/controller/favorite_controller.dart';
+import 'package:campsite/model/favourite.dart';
+import 'package:campsite/util/icon_buttons.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:campsite/controller/checkin_controller.dart';
 import 'package:campsite/controller/profile_controller.dart';
 import 'package:campsite/model/checkin.dart';
@@ -13,6 +17,7 @@ import 'package:campsite/util/spot_detail.dart';
 import 'package:campsite/util/spot_review.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rating_bar/rating_bar.dart';
 
@@ -29,24 +34,44 @@ class _SpotScreenState extends State<SpotScreen> {
   Color _detailText = Colors.white;
   Color _reviewButton = Colors.white;
   Color _reviewText = Colors.red;
+  bool favAct = false;
   Widget _spotMenu;
   List<ImageProvider<dynamic>> imgs = List();
   Map<String, ProfileModel> _profiles = Map();
   List _checkinUsers = List();
+
+  List _favourite = List();
+  getFavourites(String userID) async {
+    RequestResult _req =
+        await FavouriteController().getByUser(Resources.userId);
+
+    _favourite.clear();
+    if (_req.data != null && _req.data.length > 0) {
+      setState(() {
+        _favourite = (_req.data.first.spotID);
+      });
+    } else {
+      setState(() {});
+    }
+    setState(() {
+      favAct = _favourite.contains(widget.spotModel.spotId);
+    });
+  }
+
   getCheckins(String spotID) async {
     RequestResult _req = await CheckinController().getBySpot(spotID);
     if (_req.data != null && _req.data.length > 0) {
-      print("OOOOOOOOOOOOOOOOOOOOOOOB   :  "+ _req.data.toString());
-        for (var userID in _req.data.first.userIDs) {
-          RequestResult _reqProf = await ProfileController().getById(userID);
-          setState(() {
-            _profiles[userID] = _reqProf.data.first;
-          });
-        }
-
+      print("OOOOOOOOOOOOOOOOOOOOOOOB   :  " + _req.data.toString());
+      for (var userID in _req.data.first.userIDs) {
+        RequestResult _reqProf = await ProfileController().getById(userID);
         setState(() {
-          _checkinUsers = _req.data.first.userIDs;
+          _profiles[userID] = _reqProf.data.first;
         });
+      }
+
+      setState(() {
+        _checkinUsers = _req.data.first.userIDs;
+      });
     }
   }
 
@@ -61,6 +86,7 @@ class _SpotScreenState extends State<SpotScreen> {
 
   @override
   void initState() {
+    getFavourites(Resources.userId);
     _spotMenu = SpotDetails(
         spotModel: widget.spotModel,
         onSpotChange: (spot) {
@@ -73,6 +99,7 @@ class _SpotScreenState extends State<SpotScreen> {
         imgs.add(NetworkImage(img));
       });
     });
+
     getCheckins(widget.spotModel.spotId);
     getSpotOwner();
     super.initState();
@@ -83,6 +110,7 @@ class _SpotScreenState extends State<SpotScreen> {
     double sysHeight = MediaQuery.of(context).size.height;
     double sysWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: Stack(
         children: <Widget>[
           LayoutBuilder(
@@ -140,21 +168,75 @@ class _SpotScreenState extends State<SpotScreen> {
                                     icon: ImageIcon(
                                         AssetImage("assets/icons/Share.png"),
                                         color: Colors.white),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      FlutterShareMe().shareToWhatsApp(
+                                          msg:
+                                              "This is shared by Campsite.\n Spot Details : ${widget.spotModel.name},\n Location : ${widget.spotModel.location.coordinates[1]},${widget.spotModel.location.coordinates[0]}");
+                                    },
                                   ),
                                   IconButton(
                                     icon: ImageIcon(
                                         AssetImage("assets/icons/navigate.png"),
                                         color: Colors.white),
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      String googleUrl =
+                                          'https://www.google.com/maps/search/?api=1&query=${widget.spotModel.location.coordinates[1]},${widget.spotModel.location.coordinates[0]}';
+                                      if (await canLaunch(googleUrl)) {
+                                        await launch(googleUrl);
+                                      } else {
+                                        throw 'Could not open the map.';
+                                      }
+                                    },
                                   ),
-                                  IconButton(
-                                    icon: ImageIcon(
-                                        AssetImage(
-                                            "assets/icons/like_inactv.png"),
-                                        color: Colors.white),
-                                    onPressed: () {},
+                                  // IconButton(
+                                  //   icon: ImageIcon(
+                                  //       AssetImage(
+                                  //           "assets/icons/like_inactv.png"),
+                                  //       color: Colors.white),
+                                  //   onPressed: () {},
+                                  // ),
+                                  AIconButtons(
+                                    false,
+                                    initAct: favAct,
+                                    actImageUrl: "assets/like_act.png",
+                                    inactImageUrl: "assets/like_inactv.png",
+                                    onTap: (value) {
+                                      print("JJJJJJJJJJJJJJJJJJJJJ  : " +
+                                          _favourite
+                                              .contains(widget.spotModel.spotId)
+                                              .toString());
+                                      if (_favourite
+                                          .contains(widget.spotModel.spotId)) {
+                                        _favourite
+                                            .remove(widget.spotModel.spotId);
+                                      } else {
+                                        _favourite.add(widget.spotModel.spotId);
+                                      }
+                                      FavouriteController()
+                                          .getByUser(Resources.userId)
+                                          .then((value) {
+                                        if (value.data.length > 0) {
+                                          FavouriteController()
+                                              .update(
+                                                  Resources.userId, _favourite)
+                                              .then((value) {
+                                            getFavourites(Resources.userId);
+                                            setState(() {});
+                                          });
+                                        } else {
+                                          FavouriteController()
+                                              .save(FavouriteModel(
+                                                  spotID: _favourite,
+                                                  userID: Resources.userId))
+                                              .then((value) {
+                                            getFavourites(Resources.userId);
+                                            setState(() {});
+                                          });
+                                        }
+                                      });
+                                    },
                                   ),
+
                                   IconButton(
                                     icon: ImageIcon(
                                         AssetImage(
@@ -220,13 +302,14 @@ class _SpotScreenState extends State<SpotScreen> {
                                   child: Row(
                                     children: <Widget>[
                                       CircleAvatar(
-                                        radius: sysWidth * 0.05,
-                                        backgroundImage: _spotOwner.profPic !=
-                                                null
-                                            ? NetworkImage(_spotOwner.profPic)
-                                            : NetworkImage(
-                                                "https://img.traveltriangle.com/blog/wp-content/tr:w-700,h-400/uploads/2015/06/Demodara-Nine-Arch-Bridge.jpg'"),
-                                      ),
+                                          radius: sysWidth * 0.05,
+                                          backgroundImage: (_spotOwner
+                                                          .profPic !=
+                                                      null &&
+                                                  _spotOwner.profPic != "")
+                                              ? NetworkImage(_spotOwner.profPic)
+                                              : AssetImage(
+                                                  "assets/add_image.png")),
                                       SizedBox(
                                         width: 20,
                                       ),
@@ -305,14 +388,18 @@ class _SpotScreenState extends State<SpotScreen> {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 20, vertical: 10),
                                       child: Center(
-                                        child:_checkinUsers
-                                              .contains(Resources.userId)? Text(
-                                          "CHECKED HERE",
-                                          style: TextStyle(color: Colors.white),
-                                        ): Text(
-                                          "CHECK IN HERE",
-                                          style: TextStyle(color: Colors.red),
-                                        ),
+                                        child: _checkinUsers
+                                                .contains(Resources.userId)
+                                            ? Text(
+                                                "CHECKED HERE",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              )
+                                            : Text(
+                                                "CHECK IN HERE",
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              ),
                                       ),
                                     ),
                                   ),

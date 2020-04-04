@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bmnav/bmnav.dart' as bmnav;
 import 'package:campsite/controller/favorite_controller.dart';
 import 'package:campsite/controller/review_controller.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import 'package:campsite/controller/spot_controller.dart';
 import 'package:campsite/model/SpotSeparate.dart';
 import 'package:campsite/model/accessibility.dart';
@@ -101,7 +101,7 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
 
     setState(() {});
     print("onMapCreated");
-    
+
     clusteringHelper.updateMap();
   }
 
@@ -745,7 +745,15 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
                                             icon: ImageIcon(
                                               AssetImage("assets/navigate.png"),
                                             ),
-                                            onPressed: null,
+                                            onPressed: () async {
+                                              String googleUrl =
+                                                  'https://www.google.com/maps/search/?api=1&query=${_selectedSpotModel.location.coordinates[1]},${_selectedSpotModel.location.coordinates[0]}';
+                                              if (await canLaunch(googleUrl)) {
+                                                await launch(googleUrl);
+                                              } else {
+                                                throw 'Could not open the map.';
+                                              }
+                                            },
                                           )
                                         ],
                                       )

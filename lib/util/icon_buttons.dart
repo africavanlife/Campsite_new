@@ -15,25 +15,22 @@ class AIconButtons extends StatefulWidget {
   _AIconButtonsState createState() => _AIconButtonsState(show,
       actImageUrl: actImageUrl,
       inactImageUrl: inactImageUrl,
-      onTap: onTap,
-      initAct: initAct);
+      onTap: onTap);
 }
 
 class _AIconButtonsState extends State<AIconButtons> {
   _AIconButtonsState(this.show,
       {@required this.actImageUrl,
       @required this.inactImageUrl,
-      this.onTap,
-      this.initAct});
+      this.onTap});
   final String actImageUrl;
   final String inactImageUrl;
   final Function(bool) onTap;
-  final bool initAct;
   final bool show;
   String _currentImage;
   @override
   void initState() {
-    if (initAct) {
+    if (widget.initAct) {
       _currentImage = actImageUrl;
     } else {
       _currentImage = inactImageUrl;

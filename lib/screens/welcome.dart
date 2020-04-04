@@ -14,6 +14,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Widget build(BuildContext context) {
     Resources.setIcons();
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: Container(
         width: double.infinity,
         decoration: BoxDecoration(

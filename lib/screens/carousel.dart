@@ -5,6 +5,7 @@ class CarouselPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: Container(
         color: Colors.black,
         child: Center(

@@ -3,14 +3,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Resources {
   static bool isVerified = false;
-  //static var ip = "192.168.8.100:4444";
-   static var ip = "35.202.28.78:4444";
+  static var ip = "192.168.8.101:4444";
+  //  static var ip = "35.202.28.78:4444";
   static final Color mainColor = Colors.red;
   static final GlobalKey<NavigatorState> navigationKey =
       GlobalKey<NavigatorState>();
 static final String googleAPIKey="AIzaSyD2POtiebHnl3MuwvxpYn1ALabp4Z05o64";
 
-  static String userId = "17msbglv144k6whhkhc";
+  static String userId = "";
   // static final List images = [
   //   // "https://lh3.googleusercontent.com/proxy/FqEb4Vu0WjBPNbxWa-u0F8aLGAxSZaQMUmso9q_DFvyx_EVrny-pCTapVBXBDufZpEkHazdQAKUmdfS1gGH1qGiyYnk9AITJoFY3oJgo2S-U-yP_MtOALA",
   //   "https://www.triplankatours.com/wp-content/uploads/2018/05/14-days-sri-lanka-itinerary-image-6.jpg",

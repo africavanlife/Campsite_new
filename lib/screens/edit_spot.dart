@@ -74,6 +74,7 @@ loadAssets(){
               focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Resources.mainColor)))),
           child: Scaffold(
+            resizeToAvoidBottomPadding: false,
         body: _progressBar
             ? Center(
                 child: CircularProgressIndicator(),

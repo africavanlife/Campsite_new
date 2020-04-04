@@ -42,7 +42,7 @@ class _ProfileMapState extends State<ProfileMap> {
   Color layerIconColor = Colors.black;
   Color positionIconColor = Colors.black;
   MapType mapType = MapType.normal;
-  
+
   bool _markerDetailVisibility = false;
   bool _filterScreenVisibility = false;
   double _filterSliderVal = 170;
@@ -56,7 +56,6 @@ class _ProfileMapState extends State<ProfileMap> {
     print("onMapCreated");
     _googleMapController = mapController;
   }
-
 
   @override
   void initState() {
@@ -128,7 +127,15 @@ class _ProfileMapState extends State<ProfileMap> {
           onMapCreated: _onMapCreated,
           mapType: mapType,
           initialCameraPosition: CameraPosition(
-            target: widget.wildSpot.first,
+            target: widget.wildSpot != null && widget.wildSpot.length > 0
+                ? widget.wildSpot.first
+                : widget.parking != null && widget.parking.length > 0
+                    ? widget.parking.first
+                    : widget.campsite != null && widget.campsite.length > 0
+                        ? widget.campsite.first
+                        : widget.rvPark != null && widget.rvPark.length > 0
+                            ? widget.rvPark.first
+                            : LatLng(0, 0),
             zoom: 14.4746,
           ),
           markers: markers,
@@ -473,7 +480,7 @@ class _ProfileMapState extends State<ProfileMap> {
                       height: 20,
                     ),
                     SpotDetails(
-                      filter:true,
+                      filter: true,
                       spotModel: _filterSpotModel,
                       show: show,
                       onSpotChange: (spotModel) {

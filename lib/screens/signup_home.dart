@@ -28,6 +28,7 @@ class _SignupHomeScreenState extends State<SignupHomeScreen> {
     double sysHeight = MediaQuery.of(context).size.height;
     double sysWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: Container(
         width: double.infinity,
         decoration: BoxDecoration(

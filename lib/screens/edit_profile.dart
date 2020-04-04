@@ -90,6 +90,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Resources.mainColor)))),
       child: Scaffold(
+        resizeToAvoidBottomPadding: false,
         body: _progressBarActive == true
             ? Center(child: CircularProgressIndicator())
             : Stack(

@@ -11,6 +11,7 @@ import 'package:campsite/util/resources.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bmnav/bmnav.dart' as bmnav;
+import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -45,6 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
     double sysWidth = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomPadding: false,
         backgroundColor: Resources.mainWhiteColor,
         key: _drawerKey,
         drawer: Drawer(
@@ -103,7 +105,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 20,
                       ),
                       FlatButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            FlutterShareMe().shareToWhatsApp(
+                                msg:
+                                    "This is shared by Campsite. https://www.campsite.com}");
+                          },
                           child: Text(
                             "INVITE FRIENDS",
                             style: TextStyle(color: Resources.mainColor),
