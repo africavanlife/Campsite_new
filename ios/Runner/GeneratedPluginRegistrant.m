@@ -64,6 +64,12 @@
 @import google_sign_in;
 #endif
 
+#if __has_include(<image_cropper/ImageCropperPlugin.h>)
+#import <image_cropper/ImageCropperPlugin.h>
+#else
+@import image_cropper;
+#endif
+
 #if __has_include(<image_picker/FLTImagePickerPlugin.h>)
 #import <image_picker/FLTImagePickerPlugin.h>
 #else
@@ -74,12 +80,6 @@
 #import <location_permissions/LocationPermissionsPlugin.h>
 #else
 @import location_permissions;
-#endif
-
-#if __has_include(<multi_image_picker/MultiImagePickerPlugin.h>)
-#import <multi_image_picker/MultiImagePickerPlugin.h>
-#else
-@import multi_image_picker;
 #endif
 
 #if __has_include(<path_provider/FLTPathProviderPlugin.h>)
@@ -125,9 +125,9 @@
   [GoogleApiAvailabilityPlugin registerWithRegistrar:[registry registrarForPlugin:@"GoogleApiAvailabilityPlugin"]];
   [FLTGoogleMapsPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTGoogleMapsPlugin"]];
   [FLTGoogleSignInPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTGoogleSignInPlugin"]];
+  [FLTImageCropperPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTImageCropperPlugin"]];
   [FLTImagePickerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTImagePickerPlugin"]];
   [LocationPermissionsPlugin registerWithRegistrar:[registry registrarForPlugin:@"LocationPermissionsPlugin"]];
-  [MultiImagePickerPlugin registerWithRegistrar:[registry registrarForPlugin:@"MultiImagePickerPlugin"]];
   [FLTPathProviderPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTPathProviderPlugin"]];
   [FLTSharedPreferencesPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTSharedPreferencesPlugin"]];
   [SimpleAuthFlutterPlugin registerWithRegistrar:[registry registrarForPlugin:@"SimpleAuthFlutterPlugin"]];

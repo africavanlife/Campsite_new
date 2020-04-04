@@ -1,4 +1,3 @@
-
 import 'dart:typed_data';
 
 import 'package:campsite/model/location.dart';
@@ -11,6 +10,7 @@ import 'package:campsite/util/image_picker.dart';
 import 'package:campsite/util/resources.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -20,6 +20,7 @@ class AddNewSpotMap extends StatefulWidget {
 }
 
 class _AddNewSpotMapState extends State<AddNewSpotMap> {
+  double _zoomlevel = 0;
   MapType mapType = MapType.normal;
   Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
   bool _markerDetailVisibility = false;
@@ -46,7 +47,9 @@ class _AddNewSpotMapState extends State<AddNewSpotMap> {
             onTap: () {
               print("CLICKD");
               setState(() {
-                _markerDetailVisibility = true;
+                if (_zoomlevel > Resources.addSpotZoomLevel) {
+                  _markerDetailVisibility = true;
+                }
               });
             },
             icon: pinIcon);
@@ -95,17 +98,17 @@ class _AddNewSpotMapState extends State<AddNewSpotMap> {
           inputDecorationTheme: InputDecorationTheme(
               focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Resources.mainColor)))),
-          child: Stack(
+      child: Stack(
         children: <Widget>[
           GoogleMap(
-             onTap: (argument) {
-                    setState(() {
-                      // _selectedSpotModel = null;
-                      _markerDetailVisibility = false;
-                    });
-                  },
-             myLocationButtonEnabled: false,
-                  myLocationEnabled: true,
+            onTap: (argument) {
+              setState(() {
+                // _selectedSpotModel = null;
+                _markerDetailVisibility = false;
+              });
+            },
+            myLocationButtonEnabled: false,
+            myLocationEnabled: true,
             mapType: mapType,
             initialCameraPosition: _kInitialLocation,
             onMapCreated: _onMapCreated,
@@ -115,8 +118,9 @@ class _AddNewSpotMapState extends State<AddNewSpotMap> {
                 Marker updatedMarker = marker.copyWith(
                   positionParam: position.target,
                 );
-
+                // print(position.zoom);
                 setState(() {
+                  _zoomlevel = position.zoom;
                   _markers[MarkerId("1")] = updatedMarker;
                 });
                 print(position.target.toString());
@@ -173,6 +177,28 @@ class _AddNewSpotMapState extends State<AddNewSpotMap> {
                   ),
                 ),
               )),
+          Positioned(
+              bottom: 0,
+              right: 0,
+              child: Visibility(
+                visible: !_markerDetailVisibility,
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Text(
+                        _zoomlevel > 19
+                            ? "You can add now"
+                            : "Please zoom more to add a spot",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    color: Colors.red,
+                  ),
+                ),
+              ))
         ],
       ),
     );
@@ -330,16 +356,30 @@ class _AddNewSpotFormState extends State<AddNewSpotForm> {
               height: sysHeight * 0.05,
               child: RaisedButton(
                 onPressed: () {
-                  setState(() {
-                    _spotModel.name = _txtSpotName.text;
-                    _spotModel.spotType = _selectedSpotType;
-                  });
-                  Resources.navigationKey.currentState.pushNamed("/addSpotFill",
-                      arguments: {
-                        'spotModel': _spotModel,
-                        'images': images,
-                        'imgTypes': _imageTypes
-                      });
+                  if (_txtSpotName.text != null &&
+                      _txtSpotName.text != "" &&
+                      _selectedSpotType != null &&
+                      _selectedSpotType != "") {
+                    setState(() {
+                      _spotModel.name = _txtSpotName.text;
+                      _spotModel.spotType = _selectedSpotType;
+                    });
+                    Resources.navigationKey.currentState
+                        .pushNamed("/addSpotFill", arguments: {
+                      'spotModel': _spotModel,
+                      'images': images,
+                      'imgTypes': _imageTypes
+                    });
+                  } else {
+                    Fluttertoast.showToast(
+                        msg: "Please Fill All the fields",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIos: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                  }
                 },
                 child: Text(
                   "SAVE",

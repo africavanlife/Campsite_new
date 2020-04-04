@@ -7,8 +7,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Resources {
   static bool isVerified = false;
-  static var ip = "192.168.8.101:4444";
-  //  static var ip = "35.202.28.78:4444";
+  static double addSpotZoomLevel=19;
+  // static var ip = "192.168.8.101:4444";
+   static var ip = "35.202.28.78:4444";
   static final Color mainColor = Colors.red;
   static final GlobalKey<NavigatorState> navigationKey =
       GlobalKey<NavigatorState>();

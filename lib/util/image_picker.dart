@@ -1,9 +1,9 @@
-
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
 
 class ImagePickerClass {
   List<Uint8List> images = List<Uint8List>();
@@ -28,8 +28,23 @@ class ImagePickerClass {
                   Navigator.of(context).pop();
                   var image =
                       await ImagePicker.pickImage(source: ImageSource.camera);
-                  images.add(image.readAsBytesSync());
-                  imageTypes.add(image.path.split(".").last);
+                  File croppedFile = await ImageCropper.cropImage(
+                      sourcePath: image.path,
+                      aspectRatioPresets: [
+                        CropAspectRatioPreset.square,
+                      ],
+                      androidUiSettings: AndroidUiSettings(
+                          toolbarTitle: 'Cropper',
+                          toolbarColor: Colors.red,
+                          toolbarWidgetColor: Colors.white,
+                          initAspectRatio: CropAspectRatioPreset.original,
+                          lockAspectRatio: true),
+                      iosUiSettings: IOSUiSettings(
+                          minimumAspectRatio: 1.0,
+                          aspectRatioLockEnabled: true));
+
+                  images.add(croppedFile.readAsBytesSync());
+                  imageTypes.add(croppedFile.path.split(".").last);
                   onSelect(images, imageTypes);
                 },
               ),
@@ -40,22 +55,45 @@ class ImagePickerClass {
                 ),
                 onTap: () async {
                   Navigator.of(context).pop();
-                  List<Asset> resultList;
 
-                  try {
-                    resultList = await MultiImagePicker.pickImages(
-                      maxImages: 300,
-                    );
+                  Navigator.of(context).pop();
+                  var image =
+                      await ImagePicker.pickImage(source: ImageSource.gallery);
+                  File croppedFile = await ImageCropper.cropImage(
+                      sourcePath: image.path,
+                      aspectRatioPresets: [
+                        CropAspectRatioPreset.square,
+                      ],
+                      androidUiSettings: AndroidUiSettings(
+                          toolbarTitle: 'Cropper',
+                          toolbarColor: Colors.red,
+                          toolbarWidgetColor: Colors.white,
+                          initAspectRatio: CropAspectRatioPreset.original,
+                          lockAspectRatio: true),
+                      iosUiSettings: IOSUiSettings(
+                          minimumAspectRatio: 1.0,
+                          aspectRatioLockEnabled: true));
 
-                    for (Asset asset in resultList) {
-                      imageTypes.add(asset.name.split(".").last);
-                      images.add(
-                          (await asset.getByteData()).buffer.asUint8List());
-                    }
-                  } on Exception catch (e) {
-                    print(e.toString());
-                  }
+                  images.add(croppedFile.readAsBytesSync());
+                  imageTypes.add(croppedFile.path.split(".").last);
                   onSelect(images, imageTypes);
+
+                  // List<Asset> resultList;
+
+                  // try {
+                  //   resultList = await MultiImagePicker.pickImages(
+                  //     maxImages: 300,
+                  //   );
+
+                  //   for (Asset asset in resultList) {
+                  //     imageTypes.add(asset.name.split(".").last);
+                  //     images.add(
+                  //         (await asset.getByteData()).buffer.asUint8List());
+                  //   }
+                  // } on Exception catch (e) {
+                  //   print(e.toString());
+                  // }
+                  // onSelect(images, imageTypes);
                 },
               )
             ],

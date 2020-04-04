@@ -16,6 +16,7 @@ import 'package:campsite/util/profile_map.dart';
 import 'package:flutter_share_me/flutter_share_me.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -301,8 +302,26 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
                                           onTap: () async {
                                             if (_friends.contains(userID)) {
                                               _friends.remove(userID);
+                                              Fluttertoast.showToast(
+                                                  msg: "Unfriend",
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  timeInSecForIos: 1,
+                                                  backgroundColor: Colors.red,
+                                                  textColor: Colors.white,
+                                                  fontSize: 16.0);
                                             } else {
                                               _friends.add(userID);
+                                              Fluttertoast.showToast(
+                                                  msg: "Friend Added !",
+                                                  toastLength:
+                                                      Toast.LENGTH_SHORT,
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  timeInSecForIos: 1,
+                                                  backgroundColor: Colors.red,
+                                                  textColor: Colors.white,
+                                                  fontSize: 16.0);
                                             }
 
                                             FriendsController()

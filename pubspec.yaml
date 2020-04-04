@@ -29,7 +29,8 @@ dependencies:
   bmnav: ^0.3.4
   carousel_pro: ^1.0.0
   gradient_app_bar: ^0.0.1
-  multi_image_picker: ^4.6.1
+  # multi_image_picker: ^4.6.1
+  image_cropper: ^1.2.1
   clustering_google_maps: ^0.1.2
   bubble_tab_indicator: ^0.1.4
   flutter_staggered_grid_view: ^0.3.0
