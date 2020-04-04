@@ -9,6 +9,7 @@ import 'package:campsite/controller/review_controller.dart';
 import 'package:campsite/controller/spot_controller.dart';
 import 'package:campsite/model/SpotSeparate.dart';
 import 'package:campsite/model/favourite.dart';
+import 'package:campsite/model/notifications.dart';
 import 'package:campsite/model/profile.dart';
 import 'package:campsite/model/spot.dart';
 import 'package:campsite/resources/RequestResult.dart';
@@ -46,6 +47,16 @@ class _ProfileScreenState extends State<ProfileScreen>
   GoogleMapController _googleMapController;
 
   Map<String, ProfileModel> _profiles = Map();
+
+  List<NotificationsModel> _notifications = List();
+  getNotifications() async {
+    _notifications.clear();
+    Resources.getNotifications().then((value) => {
+          setState(() {
+            _notifications = value;
+          })
+        });
+  }
 
   List _friends = List();
   getFriends(String userID) async {
@@ -375,13 +386,13 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                 color: Resources.mainColor,
                                               ),
                                               onPressed: () async {
-                                                  var instaUrl =
-                                                      "http://instagram.com/_u/${_profileModel.instaAcc}";
-                                                  await canLaunch(instaUrl)
-                                                      ? launch(instaUrl)
-                                                      : print(
-                                                          "open instagram app link or do a snackbar with notification that there is no instagram installed");
-                                                }),
+                                                var instaUrl =
+                                                    "http://instagram.com/_u/${_profileModel.instaAcc}";
+                                                await canLaunch(instaUrl)
+                                                    ? launch(instaUrl)
+                                                    : print(
+                                                        "open instagram app link or do a snackbar with notification that there is no instagram installed");
+                                              }),
                                           SizedBox(
                                             width: 10,
                                           ),
@@ -390,14 +401,14 @@ class _ProfileScreenState extends State<ProfileScreen>
                                                   AssetImage(
                                                       "assets/whatsapp.png"),
                                                   color: Resources.mainColor),
-                                               onPressed: () async {
-                                                  var whatsappUrl =
-                                                      "whatsapp://send?phone=${_profileModel.whatsappAcc}";
-                                                  await canLaunch(whatsappUrl)
-                                                      ? launch(whatsappUrl)
-                                                      : print(
-                                                          "open whatsapp app link or do a snackbar with notification that there is no whatsapp installed");
-                                                }),
+                                              onPressed: () async {
+                                                var whatsappUrl =
+                                                    "whatsapp://send?phone=${_profileModel.whatsappAcc}";
+                                                await canLaunch(whatsappUrl)
+                                                    ? launch(whatsappUrl)
+                                                    : print(
+                                                        "open whatsapp app link or do a snackbar with notification that there is no whatsapp installed");
+                                              }),
                                         ],
                                       ),
                                       Row(
@@ -406,12 +417,16 @@ class _ProfileScreenState extends State<ProfileScreen>
                                           SizedBox(
                                             width: 5,
                                           ),
-                                          CircleAvatar(
-                                            radius: 10,
-                                            backgroundColor:
-                                                Resources.mainColor,
-                                            child: Text("1"),
-                                          )
+                                          _notifications.length > 0
+                                              ? CircleAvatar(
+                                                  radius: 10,
+                                                  backgroundColor:
+                                                      Resources.mainColor,
+                                                  child: Text(_notifications
+                                                      .length
+                                                      .toString()),
+                                                )
+                                              : Container(),
                                         ],
                                       )
                                     ],
@@ -579,7 +594,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                               children: <Widget>[
                                                 Image(
                                                   height: 150,
-                                                  width: sysWidth*0.5,
+                                                  width: sysWidth * 0.5,
                                                   image: NetworkImage(
                                                       _favourite[index]
                                                           .images

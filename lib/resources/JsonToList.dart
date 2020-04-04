@@ -6,6 +6,8 @@ import 'package:campsite/model/friends.dart';
 import 'package:campsite/model/profile.dart';
 import 'package:campsite/model/spot.dart';
 import 'package:campsite/model/review.dart';
+import 'package:campsite/model/notifications.dart';
+import 'package:flutter/cupertino.dart';
 
 class CreateList<T> {
   dynamic json;
@@ -50,6 +52,9 @@ class CreateList<T> {
     }
     if (T == FavouriteModel().runtimeType) {
       return FavouriteModel.fromJson(json);
+    }
+    if (T == NotificationsModel().runtimeType) {
+      return NotificationsModel.fromJson(json);
     }
   }
 }

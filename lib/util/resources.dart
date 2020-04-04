@@ -1,3 +1,7 @@
+import 'package:campsite/controller/notification_controller.dart';
+import 'package:campsite/model/notifications.dart';
+import 'package:campsite/model/notifymsg.dart';
+import 'package:campsite/resources/RequestResult.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -8,20 +12,9 @@ class Resources {
   static final Color mainColor = Colors.red;
   static final GlobalKey<NavigatorState> navigationKey =
       GlobalKey<NavigatorState>();
-static final String googleAPIKey="AIzaSyD2POtiebHnl3MuwvxpYn1ALabp4Z05o64";
+  static final String googleAPIKey = "AIzaSyD2POtiebHnl3MuwvxpYn1ALabp4Z05o64";
 
   static String userId = "";
-  // static final List images = [
-  //   // "https://lh3.googleusercontent.com/proxy/FqEb4Vu0WjBPNbxWa-u0F8aLGAxSZaQMUmso9q_DFvyx_EVrny-pCTapVBXBDufZpEkHazdQAKUmdfS1gGH1qGiyYnk9AITJoFY3oJgo2S-U-yP_MtOALA",
-  //   "https://www.triplankatours.com/wp-content/uploads/2018/05/14-days-sri-lanka-itinerary-image-6.jpg",
-  //   "https://www.ootlah.com/wp-content/uploads/2019/10/Cover1.jpg",
-  //   "https://igolanka.com/wp-content/uploads/2019/02/Nine_arch_Bridge-960x490.jpg"
-  // ];
-
-  // static final mainWhiteColor = Colors.white;
-  // static final mainBlackColor = Colors.black;
-  // static final bottomNaviColor = Colors.white;
-
   static final mainWhiteColor = Colors.black87;
   static final mainBlackColor = Colors.white;
   static final bottomNaviColor = Colors.grey;
@@ -69,5 +62,30 @@ static final String googleAPIKey="AIzaSyD2POtiebHnl3MuwvxpYn1ALabp4Z05o64";
         });
       });
     });
+  }
+
+  static Future<void> addNotifications(
+      String user, NotifymsgModel notifymsg) async {
+    RequestResult notifications =
+        await NotificationsController().getByUser(user);
+    if (notifications.data.length < 1) {
+      List lst = [];
+      lst.add(notifymsg);
+      await NotificationsController()
+          .save(NotificationsModel(userID: user, notifications: lst));
+    } else {
+      List lst = notifications.data.first.notifications;
+      await NotificationsController().update(Resources.userId, lst);
+    }
+  }
+
+  static Future<List> getNotifications() async {
+    RequestResult notifications =
+        await NotificationsController().getByUser(Resources.userId);
+    if (notifications.data.length > 0) {
+      return notifications.data;
+    } else {
+      return [];
+    }
   }
 }

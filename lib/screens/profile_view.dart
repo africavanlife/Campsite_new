@@ -19,6 +19,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:campsite/model/notifymsg.dart';
 
 class ProfileViewScreen extends StatefulWidget {
   // ProfileViewScreen(this.userid);
@@ -325,7 +326,18 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
                                                                           _friends))
                                                                   .then(
                                                                       (value) {
-                                                                setState(() {});
+                                                                Resources.addNotifications(
+                                                                        userID,
+                                                                        NotifymsgModel(
+                                                                            profileId: Resources
+                                                                                .userId,
+                                                                            msg:
+                                                                                "A new friend Request.",
+                                                                            url:
+                                                                                "/friendrequestaccept"))
+                                                                    .then((value) =>
+                                                                        setState(
+                                                                            () {}));
                                                               }),
                                                             }
                                                         }
@@ -341,7 +353,19 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
                                                                       .userId,
                                                                   _friends)
                                                               .then((value) {
-                                                            setState(() {});
+                                                            Resources.addNotifications(
+                                                                    userID,
+                                                                    NotifymsgModel(
+                                                                        profileId:
+                                                                            Resources
+                                                                                .userId,
+                                                                        msg:
+                                                                            "A new friend Request.",
+                                                                        url:
+                                                                            "/friendrequestaccept"))
+                                                                .then((value) =>
+                                                                    setState(
+                                                                        () {}));
                                                           }),
                                                         }
                                                     });
