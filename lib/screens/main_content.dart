@@ -9,8 +9,10 @@ import 'package:campsite/screens/event_add_spot_fill.dart';
 import 'package:campsite/screens/event_add_spot_map.dart';
 import 'package:campsite/screens/map_home.dart';
 import 'package:campsite/screens/profile.dart';
+import 'package:campsite/screens/profile_friends.dart';
 import 'package:campsite/screens/profile_view.dart';
 import 'package:campsite/util/nested_route.dart';
+import 'package:campsite/util/profile_followers_following.dart';
 import 'package:campsite/util/resources.dart';
 import 'package:campsite/util/review.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +45,7 @@ class _MainContentState extends State<MainContent> {
         '/community': (context) => CommunityScreen(widget.drawerKey),
         '/communityDetails': (context) => CommunityDetailsScreen(),
         '/viewProfile': (context) => ProfileViewScreen(),
+        '/viewProfileFriends': (context) => ProfileFriends(),
       },
     );
   }

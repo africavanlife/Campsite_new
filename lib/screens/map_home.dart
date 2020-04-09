@@ -746,13 +746,14 @@ class _MapHomeScreenState extends State<MapHomeScreen> {
                                               AssetImage("assets/navigate.png"),
                                             ),
                                             onPressed: () async {
-                                              String googleUrl =
-                                                  'https://www.google.com/maps/search/?api=1&query=${_selectedSpotModel.location.coordinates[1]},${_selectedSpotModel.location.coordinates[0]}';
-                                              if (await canLaunch(googleUrl)) {
-                                                await launch(googleUrl);
-                                              } else {
-                                                throw 'Could not open the map.';
-                                              }
+                                              // String googleUrl =
+                                              //     'https://www.google.com/maps/search/?api=1&query=${_selectedSpotModel.location.coordinates[1]},${_selectedSpotModel.location.coordinates[0]}';
+                                              // if (await canLaunch(googleUrl)) {
+                                              //   await launch(googleUrl);
+                                              // } else {
+                                              //   throw 'Could not open the map.';
+                                              // }
+                                              Resources.openMapsSheet(context, LatLng(_selectedSpotModel.location.coordinates[1], _selectedSpotModel.location.coordinates[0]));
                                             },
                                           )
                                         ],

@@ -499,6 +499,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.11.4"
+  map_launcher:
+    dependency: "direct main"
+    description:
+      name: map_launcher
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.4"
   matcher:
     dependency: transitive
     description:
@@ -791,6 +798,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.0"
+  tabbar:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "4e61b055b1d5ab222c9347f7869b4683a7729fd8"
+      url: "https://github.com/davidsdearaujo/tabbar.git"
+    source: git
+    version: "0.0.3"
   term_glyph:
     dependency: transitive
     description:
@@ -804,21 +820,21 @@ packages:
       name: test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.9.4"
+    version: "1.13.0"
   test_api:
     dependency: transitive
     description:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.11"
+    version: "0.2.15"
   test_core:
     dependency: transitive
     description:
       name: test_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.15"
+    version: "0.3.1"
   timing:
     dependency: transitive
     description:
@@ -889,6 +905,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+  webkit_inspection_protocol:
+    dependency: transitive
+    description:
+      name: webkit_inspection_protocol
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.0+1"
   xml:
     dependency: transitive
     description:

@@ -93,28 +93,35 @@ class _ProfileScreenState extends State<ProfileScreen>
         wildSpot.clear();
         parking.clear();
         rvPark.clear();
-
+        _allSpotsbyUser.clear();
         if (value.ok) {
           setState(() {
             SpotSeparateModel separateModel = value.data.first;
             for (SpotModel spotModel in separateModel.campsite) {
               campsite.add(LatLng(spotModel.location.coordinates[1],
                   spotModel.location.coordinates[0]));
+              _allSpotsbyUser.add(spotModel);
             }
             for (SpotModel spotModel in separateModel.wildSpots) {
               wildSpot.add(LatLng(spotModel.location.coordinates[1],
                   spotModel.location.coordinates[0]));
+              _allSpotsbyUser.add(spotModel);
             }
             for (SpotModel spotModel in separateModel.parking) {
               parking.add(LatLng(spotModel.location.coordinates[1],
                   spotModel.location.coordinates[0]));
+              _allSpotsbyUser.add(spotModel);
             }
             for (SpotModel spotModel in separateModel.rvPark) {
               rvPark.add(LatLng(spotModel.location.coordinates[1],
                   spotModel.location.coordinates[0]));
+              _allSpotsbyUser.add(spotModel);
             }
           });
         }
+
+        print("EEEEEEEEEEEEEEEEEEEEEEEEEEE     " +
+            _allSpotsbyUser.length.toString());
       }
     });
   }
@@ -225,6 +232,24 @@ class _ProfileScreenState extends State<ProfileScreen>
     }
   }
 
+  List<SpotModel> _allSpotsbyUser = List();
+  // setAllSpotsByUser() async {
+  //   SpotController()
+  //       .getSeparateByUser(_profileModel.id)
+  //       .then((req) => setState(() {
+  //             SpotSeparateModel sepSpot = req.data[0];
+
+  //             _allSpotsbyUser.addAll(sepSpot.campsite);
+  //             _allSpotsbyUser.addAll(sepSpot.wildSpots);
+  //             _allSpotsbyUser.addAll(sepSpot.parking);
+  //             _allSpotsbyUser.addAll(sepSpot.rvPark);
+  //             print("EEEEEEEEEEEEEEEEEEEEEEEEEEEEE   :" +
+  //                 _allSpotsbyUser.length.toString() +
+  //                 "      " +
+  //                 _profileModel.id);
+  //           }));
+  // }
+
   @override
   void initState() {
     getUserDetails(Resources.userId);
@@ -236,6 +261,8 @@ class _ProfileScreenState extends State<ProfileScreen>
     getFriends(Resources.userId);
     getFavourites(Resources.userId);
     super.initState();
+
+    // setAllSpotsByUser();
   }
 
   @override
@@ -297,6 +324,24 @@ class _ProfileScreenState extends State<ProfileScreen>
                                           ? NetworkImage(_profileModel.profPic)
                                           : null,
                                       radius: sysHeight * 0.07,
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: sysHeight * 0.04,
+                                    left: sysHeight * 0.14,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Resources.navigationKey.currentState
+                                            .pushNamed('/viewProfileFriends');
+                                      },
+                                      child: _friends.length > 0
+                                          ? CircleAvatar(
+                                              radius: 10,
+                                              backgroundColor: Colors.blue,
+                                              child: Text(
+                                                  _friends.length.toString()),
+                                            )
+                                          : Container(),
                                     ),
                                   ),
                                   Positioned(
@@ -529,10 +574,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                               .push(
                                             MaterialPageRoute(
                                               builder: (context) => ProfileMap(
-                                                wildSpot: wildSpot,
-                                                campsite: campsite,
-                                                rvPark: rvPark,
-                                                parking: parking,
+                                                spots: _allSpotsbyUser,
                                               ),
                                             ),
                                           );

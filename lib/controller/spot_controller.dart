@@ -19,6 +19,14 @@ class SpotController {
         true, CreateList<SpotModel>(jsonDecode(response.body)).getList());
   }
 
+  Future<RequestResult> getByUser(String id) async {
+    final uri = Uri.http(Resources.ip, '/spot/byUser/$id');
+    final headers = {HttpHeaders.contentTypeHeader: 'application/json'};
+    final response = await http.get(uri, headers: headers);
+    return RequestResult(
+        true, CreateList<SpotModel>(jsonDecode(response.body)).getList());
+  }
+
   Future<RequestResult> getById(String id) async {
     final uri = Uri.http(Resources.ip, '/spot/getById/$id');
     final headers = {HttpHeaders.contentTypeHeader: 'application/json'};

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:campsite/controller/favorite_controller.dart';
 import 'package:campsite/model/favourite.dart';
 import 'package:campsite/util/icon_buttons.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:campsite/controller/checkin_controller.dart';
 import 'package:campsite/controller/profile_controller.dart';
@@ -179,13 +180,14 @@ class _SpotScreenState extends State<SpotScreen> {
                                         AssetImage("assets/icons/navigate.png"),
                                         color: Colors.white),
                                     onPressed: () async {
-                                      String googleUrl =
-                                          'https://www.google.com/maps/search/?api=1&query=${widget.spotModel.location.coordinates[1]},${widget.spotModel.location.coordinates[0]}';
-                                      if (await canLaunch(googleUrl)) {
-                                        await launch(googleUrl);
-                                      } else {
-                                        throw 'Could not open the map.';
-                                      }
+                                      // String googleUrl =
+                                      //     'https://www.google.com/maps/search/?api=1&query=${widget.spotModel.location.coordinates[1]},${widget.spotModel.location.coordinates[0]}';
+                                      // if (await canLaunch(googleUrl)) {
+                                      //   await launch(googleUrl);
+                                      // } else {
+                                      //   throw 'Could not open the map.';
+                                      // }
+                                      Resources.openMapsSheet(context, LatLng(widget.spotModel.location.coordinates[1], widget.spotModel.location.coordinates[0]));
                                     },
                                   ),
                                   // IconButton(

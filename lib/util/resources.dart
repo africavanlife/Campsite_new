@@ -4,18 +4,20 @@ import 'package:campsite/model/notifymsg.dart';
 import 'package:campsite/resources/RequestResult.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:map_launcher/map_launcher.dart';
 
 class Resources {
   static bool isVerified = false;
-  static double addSpotZoomLevel=19;
+  static double addSpotZoomLevel = 19;
   // static var ip = "192.168.8.101:4444";
-   static var ip = "35.202.28.78:4444";
+  static var ip = "35.202.28.78:4444";
   static final Color mainColor = Colors.red;
   static final GlobalKey<NavigatorState> navigationKey =
       GlobalKey<NavigatorState>();
   static final String googleAPIKey = "AIzaSyD2POtiebHnl3MuwvxpYn1ALabp4Z05o64";
 
-  static String userId = "";
+  static String userId = "17msbglv144k6whhkhc";
+  // static String userId = "";
   static final mainWhiteColor = Colors.black87;
   static final mainBlackColor = Colors.white;
   static final bottomNaviColor = Colors.grey;
@@ -87,6 +89,45 @@ class Resources {
       return notifications.data;
     } else {
       return [];
+    }
+  }
+
+  static openMapsSheet(BuildContext context, LatLng latLng) async {
+    try {
+      final coords = Coords(latLng.latitude, latLng.longitude);
+      final availableMaps = await MapLauncher.installedMaps;
+
+      showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return SafeArea(
+            child: SingleChildScrollView(
+              child: Container(
+                child: Wrap(
+                  children: <Widget>[
+                    for (var map in availableMaps)
+                      ListTile(
+                        onTap: () => map.showMarker(
+                          coords: coords,
+                          title: "",
+                          description: "",
+                        ),
+                        title: Text(map.mapName),
+                        leading: Image(
+                          image: map.icon,
+                          height: 30.0,
+                          width: 30.0,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      print(e);
     }
   }
 }

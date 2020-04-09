@@ -57,28 +57,35 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
         wildSpot.clear();
         parking.clear();
         rvPark.clear();
-
+        _allSpotsbyUser.clear();
         if (value.ok) {
           setState(() {
             SpotSeparateModel separateModel = value.data.first;
             for (SpotModel spotModel in separateModel.campsite) {
               campsite.add(LatLng(spotModel.location.coordinates[1],
                   spotModel.location.coordinates[0]));
+              _allSpotsbyUser.add(spotModel);
             }
             for (SpotModel spotModel in separateModel.wildSpots) {
               wildSpot.add(LatLng(spotModel.location.coordinates[1],
                   spotModel.location.coordinates[0]));
+              _allSpotsbyUser.add(spotModel);
             }
             for (SpotModel spotModel in separateModel.parking) {
               parking.add(LatLng(spotModel.location.coordinates[1],
                   spotModel.location.coordinates[0]));
+              _allSpotsbyUser.add(spotModel);
             }
             for (SpotModel spotModel in separateModel.rvPark) {
               rvPark.add(LatLng(spotModel.location.coordinates[1],
                   spotModel.location.coordinates[0]));
+              _allSpotsbyUser.add(spotModel);
             }
           });
         }
+
+        print("EEEEEEEEEEEEEEEEEEEEEEEEEEE     " +
+            _allSpotsbyUser.length.toString());
       }
     });
   }
@@ -209,6 +216,14 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
     super.initState();
   }
 
+  List<SpotModel> _allSpotsbyUser = List();
+  // setAllSpotsByUser() async {
+  //   var req = await SpotController().getByUser(_profileModel.id);
+  //   setState(() {
+  //     _allSpotsbyUser = req.data;
+  //   });
+  // }
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -229,6 +244,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
     double sysWidth = MediaQuery.of(context).size.width;
     return Theme(
       data: ThemeData(
+          brightness: Brightness.dark,
           inputDecorationTheme: InputDecorationTheme(
               focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Resources.mainColor)))),
@@ -604,10 +620,7 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     ProfileMap(
-                                                  wildSpot: wildSpot,
-                                                  campsite: campsite,
-                                                  rvPark: rvPark,
-                                                  parking: parking,
+                                                  spots: _allSpotsbyUser,
                                                 ),
                                               ),
                                             );
