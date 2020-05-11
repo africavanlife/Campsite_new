@@ -496,12 +496,19 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
                                                   color: Resources.mainColor,
                                                 ),
                                                 onPressed: () async {
-                                                  var instaUrl =
-                                                      "http://instagram.com/_u/${_profileModel.instaAcc}";
-                                                  await canLaunch(instaUrl)
-                                                      ? launch(instaUrl)
-                                                      : print(
-                                                          "open instagram app link or do a snackbar with notification that there is no instagram installed");
+                                                  if (_profileModel
+                                                              .whatsappAcc !=
+                                                          null &&
+                                                      _profileModel
+                                                              .whatsappAcc !=
+                                                          "") {
+                                                    var instaUrl =
+                                                        "http://instagram.com/_u/${_profileModel.instaAcc}";
+                                                    await canLaunch(instaUrl)
+                                                        ? launch(instaUrl)
+                                                        : print(
+                                                            "open instagram app link or do a snackbar with notification that there is no instagram installed");
+                                                  }
                                                 }),
                                             SizedBox(
                                               width: 10,
@@ -512,12 +519,19 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
                                                         "assets/whatsapp.png"),
                                                     color: Resources.mainColor),
                                                 onPressed: () async {
-                                                  var whatsappUrl =
-                                                      "whatsapp://send?phone=${_profileModel.whatsappAcc}";
-                                                  await canLaunch(whatsappUrl)
-                                                      ? launch(whatsappUrl)
-                                                      : print(
-                                                          "open whatsapp app link or do a snackbar with notification that there is no whatsapp installed");
+                                                  if (_profileModel
+                                                              .whatsappAcc !=
+                                                          null &&
+                                                      _profileModel
+                                                              .whatsappAcc !=
+                                                          "") {
+                                                    var whatsappUrl =
+                                                        "whatsapp://send?phone=${_profileModel.whatsappAcc}";
+                                                    await canLaunch(whatsappUrl)
+                                                        ? launch(whatsappUrl)
+                                                        : print(
+                                                            "open whatsapp app link or do a snackbar with notification that there is no whatsapp installed");
+                                                  }
                                                 }),
                                           ],
                                         ),
@@ -600,7 +614,9 @@ class _ProfileViewScreenState extends State<ProfileViewScreen>
                                           onMapCreated: _onMapCreated,
                                           mapType: mapType,
                                           initialCameraPosition: CameraPosition(
-                                            target: wildSpot.first,
+                                            target: wildSpot.length > 0
+                                                ? wildSpot.first
+                                                : LatLng(0, 0),
                                             zoom: 14.4746,
                                           ),
                                           markers: markers,

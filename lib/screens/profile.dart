@@ -339,7 +339,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                                               radius: 10,
                                               backgroundColor: Colors.blue,
                                               child: Text(
-                                                  _friends.length.toString()),
+                                                  _friends.length.toString(),style: TextStyle(color: Colors.white),),
                                             )
                                           : Container(),
                                     ),
