@@ -75,6 +75,57 @@ class _ProfileScreenState extends State<ProfileScreen>
     }
   }
 
+  List<ProfileModel> _followers = List();
+  List<ProfileModel> _followings = List();
+
+  getFollowDetails() async {
+    var lst1 = List<ProfileModel>();
+    var lst2 = List<ProfileModel>();
+    await FriendsController().getByUser(Resources.userId).then((req) async => {
+          req.data.forEach((friendlist) {
+            friendlist.friends.forEach((id) {
+              ProfileController().getById(id).then((value) => {
+                    lst1.add(value.data[0]),
+                  });
+            });
+          }),
+          await FriendsController()
+              .getByFriend(Resources.userId)
+              .then((requ) => {
+                    requ.data.forEach((friendli) {
+                      friendli.friends.forEach((id) {
+                        ProfileController().getById(id).then((value) => {
+                              lst2.add(value.data[0]),
+                            });
+                      });
+                    }),
+                  }),
+          setState(() {
+            _followers = lst1;
+            _followings = lst2;
+          }),
+          print("GGGGGGGGGGGGGGGGGG" +
+              _followers.length.toString() +
+              " : " +
+              _followings.length.toString()),
+        });
+    // var req = (await FriendsController().getByUser(Resources.userId));
+    // var requ = (await FriendsController().getByFriend(Resources.userId));
+    // var lst1 = List<ProfileModel>();
+    // req.data.forEach((friendlist) {
+    //   friendlist.friends.forEach((id) async {
+    //     lst1.add((await ProfileController().getById(id)).data[0]);
+    //   });
+    // });
+
+    // var lst2 = List<ProfileModel>();
+    // requ.data.forEach((friendlist) {
+    //   friendlist.friends.forEach((id) async {
+    //     lst2.add((await ProfileController().getById(id)).data[0]);
+    //   });
+    // });
+  }
+
   int checkingNumbers = 0;
   getCheckinsByUser(String userID) async {
     await CheckinController().getByUser(userID).then((value) {
@@ -255,7 +306,7 @@ class _ProfileScreenState extends State<ProfileScreen>
     getUserDetails(Resources.userId);
     getCheckinsByUser(Resources.userId);
     getSpotsByUser(Resources.userId);
-
+    getFollowDetails();
     _tabController = new TabController(vsync: this, length: tabs.length);
 
     getFriends(Resources.userId);
@@ -330,18 +381,21 @@ class _ProfileScreenState extends State<ProfileScreen>
                                     bottom: sysHeight * 0.04,
                                     left: sysHeight * 0.14,
                                     child: GestureDetector(
-                                      onTap: () {
-                                        Resources.navigationKey.currentState
-                                            .pushNamed('/viewProfileFriends');
-                                      },
-                                      child: _friends.length > 0
-                                          ? CircleAvatar(
-                                              radius: 10,
-                                              backgroundColor: Colors.blue,
-                                              child: Text(
-                                                  _friends.length.toString(),style: TextStyle(color: Colors.white),),
-                                            )
-                                          : Container(),
+                                      onTap: () {},
+                                      child: CircleAvatar(
+                                          radius: 10,
+                                          child: Icon(FontAwesomeIcons.bell)),
+                                      // child: _friends.length > 0
+                                      //     ? CircleAvatar(
+                                      //         radius: 10,
+                                      //         backgroundColor: Colors.blue,
+                                      //         child: Text(
+                                      //           _friends.length.toString(),
+                                      //           style: TextStyle(
+                                      //               color: Colors.white),
+                                      //         ),
+                                      //       )
+                                      //     : Container(),
                                     ),
                                   ),
                                   Positioned(
@@ -456,24 +510,54 @@ class _ProfileScreenState extends State<ProfileScreen>
                                               }),
                                         ],
                                       ),
-                                      Row(
-                                        children: <Widget>[
-                                          Text("NOTIFICATIONS"),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          _notifications.length > 0
-                                              ? CircleAvatar(
-                                                  radius: 10,
-                                                  backgroundColor:
-                                                      Resources.mainColor,
-                                                  child: Text(_notifications
-                                                      .length
-                                                      .toString()),
+
+                                      GestureDetector(
+                                          onTap: () {
+                                            Resources.navigationKey.currentState
+                                                .pushNamed(
+                                                    '/viewProfileFriends');
+                                          },
+                                          child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  child: Column(children: <Widget>[
+                                                    Text("Followers"),
+                                                    Text(_followers.length
+                                                        .toString())
+                                                  ]),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  child: Column(children: <Widget>[
+                                                    Text("Followings"),
+                                                    Text(_followings.length
+                                                        .toString())
+                                                  ]),
                                                 )
-                                              : Container(),
-                                        ],
-                                      )
+                                              ])),
+
+                                      // Row(
+                                      //   children: <Widget>[
+                                      //     Text("NOTIFICATIONS"),
+                                      //     SizedBox(
+                                      //       width: 5,
+                                      //     ),
+                                      //     _notifications.length > 0
+                                      //         ? CircleAvatar(
+                                      //             radius: 10,
+                                      //             backgroundColor:
+                                      //                 Resources.mainColor,
+                                      //             child: Text(_notifications
+                                      //                 .length
+                                      //                 .toString()),
+                                      //           )
+                                      //         : Container(),
+                                      //   ],
+                                      // )
                                     ],
                                   ),
                                   Row(
