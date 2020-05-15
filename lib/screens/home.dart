@@ -81,7 +81,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           buttonColor: Resources.mainWhiteColor,
                           minWidth: double.infinity,
                           child: RaisedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                               Resources.navigationKey.currentState
+                                        .pushNamed("/editProfile");
+                            },
                             child: Text(
                               "EDIT PROFILE PHOTO",
                               style: TextStyle(
@@ -96,7 +99,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 50,
                       ),
                       FlatButton(
-                          onPressed: () {},
+                          onPressed: () {
+                             Resources.navigationKey.currentState
+                                        .pushNamed("/editProfile");
+                          },
                           child: Text(
                             "EDIT PROFILE",
                             style: TextStyle(color: Resources.mainColor),
@@ -127,7 +133,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 20,
                       ),
                       FlatButton(
-                          onPressed: () {},
+                          onPressed: () {
+                              Resources.navigationKey.currentState
+                                        .pushNamed("/profile");
+                          },
                           child: Text(
                             "LINKED ACCOUNT",
                             style: TextStyle(color: Resources.mainColor),
