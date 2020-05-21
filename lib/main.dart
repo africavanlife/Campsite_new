@@ -25,9 +25,9 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Campsite',
       theme: ThemeData.dark(),
-      // home: SafeArea(
-      //     child: WelcomeScreen()),
-      home: SafeArea(child: HomeScreen()),
+      home: SafeArea(
+          child: WelcomeScreen()),
+      // home: SafeArea(child: HomeScreen()),
     );
   }
 }

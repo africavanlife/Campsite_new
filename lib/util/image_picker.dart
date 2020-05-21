@@ -54,7 +54,7 @@ class ImagePickerClass {
                   width: 50,
                 ),
                 onTap: () async {
-                  Navigator.of(context).pop();
+                  // Navigator.of(context).pop();
 
                   Navigator.of(context).pop();
                   var image =

@@ -26,6 +26,14 @@ class MainContent extends StatefulWidget {
 
 class _MainContentState extends State<MainContent> {
   @override
+  void initState() {
+    setState(() {
+      Resources.context = context;
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return NestedNavigator(
       navigationKey: Resources.navigationKey,

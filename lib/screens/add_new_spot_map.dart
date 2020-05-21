@@ -262,10 +262,12 @@ class _AddNewSpotFormState extends State<AddNewSpotForm> {
     ImagePickerClass(context, (img, imageTypes) {
       _imageTypes.addAll(imageTypes);
       images.addAll(img);
-      setState(() {
-        enableCorousal = images.length > 0;
-        images = images;
-      });
+      if (mounted) {
+        setState(() {
+          enableCorousal = images.length > 0;
+          images = images;
+        });
+      }
       // setPrint(images.length > 0);
     });
   }
@@ -315,38 +317,67 @@ class _AddNewSpotFormState extends State<AddNewSpotForm> {
                   });
                   // widget.onChange(value);
                 }),
-            enableCorousal
-                ? SizedBox(
-                    width: sysWidth,
-                    height: sysHeight * 0.3,
-                    child: Carousel(
-                      boxFit: BoxFit.cover,
-                      autoplay: false,
-                      animationCurve: Curves.fastOutSlowIn,
-                      animationDuration: Duration(milliseconds: 1000),
-                      dotSize: 6.0,
-                      dotIncreasedColor: Colors.green,
-                      dotBgColor: Colors.black38,
-                      dotPosition: DotPosition.bottomCenter,
-                      showIndicator: true,
-                      indicatorBgPadding: 7.0,
-                      images: [for (Uint8List img in images) MemoryImage(img)],
-                    ),
-                  )
-                : GestureDetector(
-                    child: Image(
-                      image: AssetImage("assets/add_image.png"),
-                      width: sysWidth,
-                      height: sysHeight * 0.3,
-                      fit: BoxFit.cover,
-                    ),
-                    onTap: () async {
-                      setState(() {
-                        // _spotModel.images = Resources.images;
-                      });
-                      loadAssets();
-                    },
-                  ),
+            // enableCorousal
+            //     ? SizedBox(
+            //         width: sysWidth,
+            //         height: sysHeight * 0.3,
+            //         child: Carousel(
+            //           boxFit: BoxFit.cover,
+            //           autoplay: false,
+            //           animationCurve: Curves.fastOutSlowIn,
+            //           animationDuration: Duration(milliseconds: 1000),
+            //           dotSize: 6.0,
+            //           dotIncreasedColor: Colors.green,
+            //           dotBgColor: Colors.black38,
+            //           dotPosition: DotPosition.bottomCenter,
+            //           showIndicator: true,
+            //           indicatorBgPadding: 7.0,
+            //           images: [for (Uint8List img in images) MemoryImage(img)],
+            //         ),
+            //       )
+            //     : GestureDetector(
+            //         child: Image(
+            //           image: AssetImage("assets/add_image.png"),
+            //           width: sysWidth,
+            //           height: sysHeight * 0.3,
+            //           fit: BoxFit.cover,
+            //         ),
+            //         onTap: () {
+            //           loadAssets();
+            //         },
+
+            GestureDetector(
+              child: //       ),
+                  enableCorousal
+                      ? SizedBox(
+                          width: sysWidth,
+                          height: sysHeight * 0.3,
+                          child: Carousel(
+                            boxFit: BoxFit.cover,
+                            autoplay: false,
+                            animationCurve: Curves.fastOutSlowIn,
+                            animationDuration: Duration(milliseconds: 1000),
+                            dotSize: 6.0,
+                            dotIncreasedColor: Colors.green,
+                            dotBgColor: Colors.black38,
+                            dotPosition: DotPosition.bottomCenter,
+                            showIndicator: true,
+                            indicatorBgPadding: 7.0,
+                            images: [
+                              for (Uint8List img in images) MemoryImage(img)
+                            ],
+                          ),
+                        )
+                      : Image(
+                          image: AssetImage("assets/add_image.png"),
+                          width: sysWidth,
+                          height: sysHeight * 0.3,
+                          fit: BoxFit.cover,
+                        ),
+              onTap: () {
+                loadAssets();
+              },
+            ),
             ButtonTheme(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30),

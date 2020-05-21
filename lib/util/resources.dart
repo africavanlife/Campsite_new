@@ -15,7 +15,7 @@ class Resources {
   static final GlobalKey<NavigatorState> navigationKey =
       GlobalKey<NavigatorState>();
   static final String googleAPIKey = "AIzaSyD2POtiebHnl3MuwvxpYn1ALabp4Z05o64";
-
+  static BuildContext context = null;
   // static String userId = "17msbglv144k6whhkhc";
   static String userId = "";
   static final mainWhiteColor = Colors.black87;
